@@ -1,0 +1,6 @@
+@Build_Test_Dashboard_HostAddress = http://localhost:5283
+
+GET {{Build_Test_Dashboard_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
