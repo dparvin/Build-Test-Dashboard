@@ -1,6 +1,11 @@
 @Build_Test_Dashboard_HostAddress = http://localhost:5283
 
-GET {{Build_Test_Dashboard_HostAddress}}/weatherforecast/
+GET {{Build_Test_Dashboard_HostAddress}}/api/remositories
+Accept: application/json
+
+###
+
+GET {{Build_Test_Dashboard_HostAddress}}/api/builds
 Accept: application/json
 
 ###

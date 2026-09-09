@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Build-Test-Dashboard.Test/Build-Test-Dashboard.Test.csproj" Id="bdf987d3-9a17-4339-971f-9e1c4879b470" />
   <Project Path="Build-Test-Dashboard/Build-Test-Dashboard.csproj" />
 </Solution>
