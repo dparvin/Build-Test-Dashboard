@@ -1,7 +1,7 @@
 ﻿namespace Build_Test_Dashboard.Models;
 
 /// <summary>
-/// Represents a store for managing repository credentials in the build and test dashboard.
+/// Represents credentials used to access a repository in the build and test dashboard.
 /// </summary>
 public class RepositoryCredential
 {
@@ -20,10 +20,10 @@ public class RepositoryCredential
     /// </value>
     public string? AuthenticationType { get; set; }
     /// <summary>
-    /// Gets or sets the secret token.
+    /// Gets or sets the secret.
     /// </summary>
     /// <value>
-    /// The secret token.
+    /// The secret.
     /// </value>
-    public string? Secret_Token { get; set; }
+    public string? Secret { get; set; }
 }

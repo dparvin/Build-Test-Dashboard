@@ -1,4 +1,5 @@
 ﻿using Build_Test_Dashboard.Models;
+using Build_Test_Dashboard.Requests;
 using Build_Test_Dashboard.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -103,12 +104,12 @@ public class RepositoriesController(
     /// <returns></returns>
     [HttpPost]
     public async Task<ActionResult<Repository>> Post(
-        Repository repository,
+        CreateRepositoryRequest request,
         CancellationToken cancellationToken)
     {
         var connectionValid =
             await repositoryService.ValidateConnectionAsync(
-                repository,
+                request,
                 cancellationToken);
 
         if (!connectionValid)
@@ -118,8 +119,8 @@ public class RepositoriesController(
 
         return CreatedAtAction(
             nameof(Get),
-            new { id = repository.Id },
-            repository);
+            new { id = request.Repository.Id },
+            request.Repository);
     }
 
     #endregion

@@ -8,7 +8,7 @@ namespace Build_Test_Dashboard.Test;
 public class BuildsControllerTests
 {
     /// <summary>
-    /// Gets the returns build.
+    /// Test that Get returns a build.
     /// </summary>
     [Fact]
     public void Get_ReturnsBuild()
@@ -20,8 +20,11 @@ public class BuildsControllerTests
         Assert.NotNull(result);
     }
 
+    /// <summary>
+    /// Test that GetTests returns a list of Test Runs.
+    /// </summary>
     [Fact]
-    public void Get_ReturnsTest()
+    public void Get_ReturnsTests()
     {
 
         var controller = new BuildsController();

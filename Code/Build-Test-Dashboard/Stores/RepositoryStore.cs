@@ -14,19 +14,30 @@ public class RepositoryStore : IRepositoryStore
     /// <param name="repositoryId">The repository identifier.</param>
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public Task DeleteAsync(int repositoryId) => throw new NotImplementedException();
+    public Task DeleteAsync(int repositoryId)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Gets the repository asynchronously.
     /// </summary>
     /// <param name="repositoryId">The repository identifier.</param>
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public Task<Repository?> GetAsync(int repositoryId) => throw new NotImplementedException();
+    public Task<Repository?> GetAsync(int repositoryId)
+    {
+        throw new NotImplementedException();
+    }
+
     /// <summary>
     /// Stores the repository asynchronously.
     /// </summary>
     /// <param name="repository">The repository.</param>
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public Task StoreAsync(Repository repository) => throw new NotImplementedException();
+    public Task StoreAsync(Repository repository)
+    {
+        throw new NotImplementedException();
+    }
 }

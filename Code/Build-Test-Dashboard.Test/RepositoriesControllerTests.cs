@@ -2,6 +2,7 @@
 using Build_Test_Dashboard.Interface;
 using Build_Test_Dashboard.Models;
 using Build_Test_Dashboard.Providers;
+using Build_Test_Dashboard.Requests;
 using Build_Test_Dashboard.Services;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
@@ -112,15 +113,24 @@ public class RepositoriesControllerTests
     {
         var client = factory.CreateClient();
 
-        var repository = new Repository
+        var request = new CreateRepositoryRequest
         {
-            Name = "Test Repository",
-            Provider = provider,
-            Owner = "TestOwner",
-            RepositoryName = "TestRepository"
+            Repository = new Repository
+            {
+                Name = "Test Repository",
+                Provider = provider,
+                Owner = "TestOwner",
+                RepositoryName = "TestRepository"
+            },
+            Credential = new RepositoryCredential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
         };
 
-        var response = await client.PostAsJsonAsync("/api/repositories", repository, cancellationToken: TestContext.Current.CancellationToken);
+
+        var response = await client.PostAsJsonAsync("/api/repositories", request, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 

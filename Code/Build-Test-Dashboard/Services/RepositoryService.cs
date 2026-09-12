@@ -1,5 +1,5 @@
 ﻿using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
+using Build_Test_Dashboard.Requests;
 
 namespace Build_Test_Dashboard.Services;
 
@@ -25,16 +25,16 @@ public class RepositoryService(
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     public async Task<bool> ValidateConnectionAsync(
-        Repository repository,
+        CreateRepositoryRequest request,
         CancellationToken cancellationToken = default)
     {
         foreach (var provider in repositoryProvider)
         {
-            if (string.Compare(repository.Provider, provider.ProviderName, StringComparison.OrdinalIgnoreCase) == 0)
-                return await provider.ValidateConnectionAsync(repository, cancellationToken);
+            if (string.Compare(request.Repository.Provider, provider.ProviderName, StringComparison.OrdinalIgnoreCase) == 0)
+                return await provider.ValidateConnectionAsync(request, cancellationToken);
         }
 
         throw new NotSupportedException(
-            $"The repository provider '{repository.Provider}' is not supported.");
+            $"The repository provider '{request.Repository.Provider}' is not supported.");
     }
 }

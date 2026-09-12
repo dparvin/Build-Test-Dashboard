@@ -1,5 +1,5 @@
 ﻿using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
+using Build_Test_Dashboard.Requests;
 
 namespace Build_Test_Dashboard.Providers;
 
@@ -23,7 +23,9 @@ public class GitHubRepositoryProvider : IRepositoryProvider
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public Task<bool> ValidateConnectionAsync(Repository repository, CancellationToken cancellationToken = default)
+    public Task<bool> ValidateConnectionAsync(
+        CreateRepositoryRequest request,
+        CancellationToken cancellationToken = default)
     {
         return Task.FromResult(true);
     }
