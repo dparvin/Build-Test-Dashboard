@@ -8,7 +8,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddScoped<IRepositoryProvider, GitHubRepositoryProvider>();
+builder.Services.AddHttpClient<GitHubRepositoryProvider>(client =>
+{
+    client.BaseAddress = new Uri("https://api.github.com/");
+});
+
+builder.Services.AddScoped<IRepositoryProvider>(
+    provider => provider.GetRequiredService<GitHubRepositoryProvider>());
+
 builder.Services.AddScoped<IRepositoryProvider, AzureDevOpsRepositoryProvider>();
 
 builder.Services.AddScoped<RepositoryService>();

@@ -1,10 +1,9 @@
 ﻿using Build_Test_Dashboard.Controllers;
 using Build_Test_Dashboard.Interface;
 using Build_Test_Dashboard.Models;
-using Build_Test_Dashboard.Providers;
 using Build_Test_Dashboard.Requests;
 using Build_Test_Dashboard.Services;
-using Microsoft.AspNetCore.Mvc.Testing;
+using Build_Test_Dashboard.Test.Support;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -15,11 +14,11 @@ namespace Build_Test_Dashboard.Test;
 /// </summary>
 public class RepositoriesControllerTests
 {
-    private readonly WebApplicationFactory<Program> factory;
+    private readonly TestWebApplicationFactory factory;
 
     public RepositoriesControllerTests()
     {
-        factory = new WebApplicationFactory<Program>();
+        factory = new TestWebApplicationFactory();
     }
 
     /// <summary>
@@ -28,11 +27,7 @@ public class RepositoriesControllerTests
     [Fact]
     public void Get_ReturnsRepositories()
     {
-        var providers = new IRepositoryProvider[]
-        {
-            new GitHubRepositoryProvider(),
-            new AzureDevOpsRepositoryProvider()
-        };
+        var providers = Array.Empty<IRepositoryProvider>();
 
         var service = new RepositoryService(providers);
 
@@ -49,11 +44,7 @@ public class RepositoriesControllerTests
     [Fact]
     public void Get_ReturnsRepository()
     {
-        var providers = new IRepositoryProvider[]
-        {
-            new GitHubRepositoryProvider(),
-            new AzureDevOpsRepositoryProvider()
-        };
+        var providers = Array.Empty<IRepositoryProvider>();
 
         var service = new RepositoryService(providers);
 
@@ -69,11 +60,7 @@ public class RepositoriesControllerTests
     [Fact]
     public void Get_ReturnsRepositoryBuilds()
     {
-        var providers = new IRepositoryProvider[]
-        {
-            new GitHubRepositoryProvider(),
-            new AzureDevOpsRepositoryProvider()
-        };
+        var providers = Array.Empty<IRepositoryProvider>();
 
         var service = new RepositoryService(providers);
 
@@ -107,10 +94,17 @@ public class RepositoriesControllerTests
     /// Posts the API call creates repository.
     /// </summary>
     [Theory()]
-    [InlineData("GitHub")]
-    [InlineData("AzureDevOps")]
-    public async Task Post_APICall_Creates_Repository(string provider)
+    [InlineData("GitHub", HttpStatusCode.OK, HttpStatusCode.Created, "Test Repository")]
+    [InlineData("AzureDevOps", HttpStatusCode.OK, HttpStatusCode.Created, "Test Repository")]
+    [InlineData("GitHub", HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized, "")]
+    [InlineData("AzureDevOps", HttpStatusCode.Unauthorized, HttpStatusCode.Created, "Test Repository")]
+    public async Task Post_APICall_Creates_Repository(
+        string provider,
+        HttpStatusCode statusCode,
+        HttpStatusCode expectedStatusCode,
+        string expectedRepositoryName)
     {
+        factory.GitHubHandler.Response = new HttpResponseMessage(statusCode);
         var client = factory.CreateClient();
 
         var request = new CreateRepositoryRequest
@@ -132,15 +126,18 @@ public class RepositoriesControllerTests
 
         var response = await client.PostAsJsonAsync("/api/repositories", request, cancellationToken: TestContext.Current.CancellationToken);
 
-        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.Equal(expectedStatusCode, response.StatusCode);
 
         var createdRepository =
             await response.Content.ReadFromJsonAsync<Repository>(cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(createdRepository);
-        Assert.Equal("Test Repository", createdRepository.Name);
+        Assert.Equal(expectedRepositoryName, createdRepository.Name);
     }
 
+    /// <summary>
+    /// Posts the API call fails to creates repository.
+    /// </summary>
     [Fact()]
     public async Task Post_APICall_Fails_To_Creates_Repository()
     {
