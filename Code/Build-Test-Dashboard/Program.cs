@@ -1,6 +1,7 @@
 using Build_Test_Dashboard.Interface;
 using Build_Test_Dashboard.Providers;
 using Build_Test_Dashboard.Services;
+using Build_Test_Dashboard.Stores;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,13 +13,22 @@ builder.Services.AddHttpClient<GitHubRepositoryProvider>(client =>
 {
     client.BaseAddress = new Uri("https://api.github.com/");
 });
+builder.Services.AddHttpClient<AzureDevOpsRepositoryProvider>(client =>
+{
+    client.BaseAddress = new Uri("https://dev.azure.com/");
+});
 
 builder.Services.AddScoped<IRepositoryProvider>(
     provider => provider.GetRequiredService<GitHubRepositoryProvider>());
 
-builder.Services.AddScoped<IRepositoryProvider, AzureDevOpsRepositoryProvider>();
+builder.Services.AddScoped<IRepositoryProvider>(
+    provider => provider.GetRequiredService<AzureDevOpsRepositoryProvider>());
 
-builder.Services.AddScoped<RepositoryService>();
+builder.Services.AddScoped<IWindowsCredentialManager, WindowsCredentialManager>();
+builder.Services.AddScoped<IRepositoryStore, RepositoryStore>();
+builder.Services.AddScoped<ICredentialStore, WindowsCredentialStore>();
+
+builder.Services.AddScoped<IRepositoryService, RepositoryService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

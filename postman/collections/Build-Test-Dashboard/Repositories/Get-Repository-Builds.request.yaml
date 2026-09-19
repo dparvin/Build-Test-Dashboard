@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get Repository Builds
+order: 3000
+method: GET
+url: '{{baseUrl}}/api/repositories/:id/builds'
+pathVariables:
+  - key: id
+    value: '1'

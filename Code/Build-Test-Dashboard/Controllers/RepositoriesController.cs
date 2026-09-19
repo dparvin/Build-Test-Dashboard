@@ -1,6 +1,7 @@
-﻿using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Enums;
+using Build_Test_Dashboard.Interface;
+using Build_Test_Dashboard.Models;
 using Build_Test_Dashboard.Requests;
-using Build_Test_Dashboard.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Build_Test_Dashboard.Controllers;
@@ -12,9 +13,9 @@ namespace Build_Test_Dashboard.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class RepositoriesController(
-    RepositoryService repositoryService) : ControllerBase
+    IRepositoryService repositoryService) : ControllerBase
 {
-    private readonly RepositoryService repositoryService = repositoryService;
+    private readonly IRepositoryService repositoryService = repositoryService;
 
     #region GET calls ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -33,6 +34,7 @@ public class RepositoriesController(
                 Name = "Build/Test Dashboard",
                 Provider = "GitHub",
                 Owner = "dparvin",
+                Project = "",
                 RepositoryName = "Build-Test-Dashboard"
             },
             new Repository
@@ -41,7 +43,17 @@ public class RepositoriesController(
                 Name = "PropertyGridHelpers",
                 Provider = "GitHub",
                 Owner = "dparvin",
+                Project = "",
                 RepositoryName = "PropertyGridHelpers"
+            },
+            new Repository
+            {
+                Id = 3,
+                Name = "AnotherRepository",
+                Provider = "AzureDevOps",
+                Owner = "SomeOrganization",
+                Project = "SomeProject",
+                RepositoryName = "AnotherRepository"
             }
         ];
     }
@@ -107,20 +119,36 @@ public class RepositoriesController(
         CreateRepositoryRequest request,
         CancellationToken cancellationToken)
     {
-        var connectionValid =
-            await repositoryService.ValidateConnectionAsync(
+        var result =
+            await repositoryService.SaveAsync(
                 request,
                 cancellationToken);
 
-        if (!connectionValid)
-            return Unauthorized();
+        if (result.ValidationResult != RepositoryValidationResult.Valid)
+        {
+            return result.ValidationResult switch
+            {
+                RepositoryValidationResult.InvalidCredentials =>
+                    Unauthorized(),
 
-        // We'll eventually save the repository here.
+                RepositoryValidationResult.OwnerNotFound =>
+                    NotFound("Repository owner was not found."),
 
-        return CreatedAtAction(
-            nameof(Get),
-            new { id = request.Repository.Id },
-            request.Repository);
+                RepositoryValidationResult.ProjectNotFound =>
+                    NotFound("Repository project was not found."),
+
+                RepositoryValidationResult.RepositoryNotFound =>
+                    NotFound("Repository was not found."),
+
+                RepositoryValidationResult.UnknownError =>
+                    StatusCode(StatusCodes.Status502BadGateway),
+
+                _ =>
+                    StatusCode(StatusCodes.Status500InternalServerError)
+            };
+        }
+
+        return Ok(result.Repository);
     }
 
     #endregion

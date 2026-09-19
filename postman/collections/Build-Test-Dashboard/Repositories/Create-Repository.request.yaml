@@ -1,0 +1,25 @@
+$kind: http-request
+name: Create Repository
+order: 4000
+method: POST
+url: '{{baseUrl}}/api/repositories'
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "repository": {
+        "id": 0,
+        "name": "My Repository",
+        "provider": "GitHub",
+        "owner": "myowner",
+        "repositoryName": "my-repo"
+      },
+      "credential": {
+        "repositoryId": 0,
+        "authenticationType": "Token",
+        "secret": "my-token"
+      }
+    }

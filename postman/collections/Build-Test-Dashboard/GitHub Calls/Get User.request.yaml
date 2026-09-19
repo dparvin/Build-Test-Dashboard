@@ -1,0 +1,13 @@
+$kind: http-request
+url: https://api.github.com/users/testowner
+method: GET
+headers:
+  - key: Accept
+    value: application/vnd.github+json
+    disabled: false
+    description: ""
+  - key: Authorization
+    value: Bearer YOUR_PAT
+    disabled: true
+    description: ""
+order: 1789511332790

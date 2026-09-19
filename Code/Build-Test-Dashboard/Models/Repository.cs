@@ -34,6 +34,13 @@ public class Repository
     /// </value>
     public string Owner { get; set; } = string.Empty;
     /// <summary>
+    /// Gets or sets the project.
+    /// </summary>
+    /// <value>
+    /// The project.
+    /// </value>
+    public string Project { get; set; } = string.Empty;
+    /// <summary>
     /// Gets or sets the repository name.
     /// </summary>
     /// <value>

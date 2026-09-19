@@ -6,13 +6,13 @@ namespace Build_Test_Dashboard.Stores
     public class KeyVaultCredentialStore : ICredentialStore
     {
         /// <summary>
-        /// Deletes the credential asynchronously.
+        /// Stores the credential asynchronously.
         /// </summary>
-        /// <param name="repositoryId">The repository identifier.</param>
+        /// <param name="credential">The credential.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task DeleteAsync(int repositoryId, CancellationToken cancellationToken = default)
+        public Task StoreAsync(RepositoryCredential credential, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -30,13 +30,13 @@ namespace Build_Test_Dashboard.Stores
         }
 
         /// <summary>
-        /// Stores the credential asynchronously.
+        /// Deletes the credential asynchronously.
         /// </summary>
-        /// <param name="credential">The credential.</param>
+        /// <param name="repositoryId">The repository identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task StoreAsync(RepositoryCredential credential, CancellationToken cancellationToken = default)
+        public Task DeleteAsync(int repositoryId, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

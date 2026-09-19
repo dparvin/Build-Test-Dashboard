@@ -9,12 +9,13 @@ namespace Build_Test_Dashboard.Stores;
 public class RepositoryStore : IRepositoryStore
 {
     /// <summary>
-    /// Deletes the repository asynchronously.
+    /// Stores the repository asynchronously.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="repository">The repository.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public Task DeleteAsync(int repositoryId)
+    public Task<Repository> StoreAsync(Repository repository, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
@@ -23,20 +24,37 @@ public class RepositoryStore : IRepositoryStore
     /// Gets the repository asynchronously.
     /// </summary>
     /// <param name="repositoryId">The repository identifier.</param>
-    /// <returns></returns>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    ///   <c>null</c> if not found, otherwise the repository.
+    /// </returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public Task<Repository?> GetAsync(int repositoryId)
+    public Task<Repository?> GetAsync(int repositoryId, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
 
     /// <summary>
-    /// Stores the repository asynchronously.
+    /// Finds the repository asynchronously.
     /// </summary>
     /// <param name="repository">The repository.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    ///   <c>null</c> if not found, otherwise the repository identifier.
+    /// </returns>
+    /// <exception cref="System.NotImplementedException"></exception>
+    public Task<Repository?> FindAsync(Repository repository, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Deletes the repository asynchronously.
+    /// </summary>
+    /// <param name="repositoryId">The repository identifier.</param>
     /// <returns></returns>
     /// <exception cref="System.NotImplementedException"></exception>
-    public Task StoreAsync(Repository repository)
+    public Task<bool> DeleteAsync(int repositoryId, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }

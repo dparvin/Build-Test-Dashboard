@@ -1,4 +1,5 @@
-﻿using Build_Test_Dashboard.Requests;
+﻿using Build_Test_Dashboard.Enums;
+using Build_Test_Dashboard.Requests;
 
 namespace Build_Test_Dashboard.Interface;
 
@@ -21,7 +22,7 @@ public interface IRepositoryProvider
     /// <param name="repository">The repository.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    Task<bool> ValidateConnectionAsync(
+    Task<RepositoryValidationResult> ValidateRepositoryAsync(
         CreateRepositoryRequest request,
         CancellationToken cancellationToken = default);
 }

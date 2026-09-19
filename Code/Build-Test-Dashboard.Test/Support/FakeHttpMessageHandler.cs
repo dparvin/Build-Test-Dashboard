@@ -16,14 +16,7 @@ public class FakeHttpMessageHandler : HttpMessageHandler
     /// </value>
     public HttpRequestMessage? Request { get; private set; }
 
-    /// <summary>
-    /// Gets or sets the response.
-    /// </summary>
-    /// <value>
-    /// The response.
-    /// </value>
-    public HttpResponseMessage Response { get; set; } =
-        new HttpResponseMessage(HttpStatusCode.OK);
+    public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
 
     /// <summary>
     /// Gets the call count.
@@ -59,6 +52,6 @@ public class FakeHttpMessageHandler : HttpMessageHandler
         if (SendFunc != null)
             return Task.FromResult(SendFunc(request));
 
-        return Task.FromResult(Response);
+        return Task.FromResult(new HttpResponseMessage(StatusCode));
     }
 }

@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get Build Tests
+order: 2000
+method: GET
+url: '{{baseUrl}}/api/builds/:id/tests'
+pathVariables:
+  - key: id
+    value: '1'
