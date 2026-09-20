@@ -107,6 +107,10 @@ public class RepositoriesControllerTests
     [InlineData("AzureDevOps", HttpStatusCode.OK, HttpStatusCode.OK, "Test Repository")]
     [InlineData("GitHub", HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized, "")]
     [InlineData("AzureDevOps", HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized, "")]
+    [InlineData("GitHub", HttpStatusCode.NotFound, HttpStatusCode.NotFound, "")]
+    [InlineData("AzureDevOps", HttpStatusCode.NotFound, HttpStatusCode.NotFound, "")]
+    [InlineData("GitHub", HttpStatusCode.NotAcceptable, HttpStatusCode.BadGateway, "")]
+    [InlineData("AzureDevOps", HttpStatusCode.NotAcceptable, HttpStatusCode.BadGateway, "")]
     public async Task Post_APICall_Creates_Repository_Connection(
         string provider,
         HttpStatusCode statusCode,
@@ -201,6 +205,57 @@ public class RepositoriesControllerTests
         var response = await client.PostAsJsonAsync("/api/repositories", repository, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+    }
+
+    [Theory()]
+    [InlineData(HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized)]
+    [InlineData(HttpStatusCode.NotFound, HttpStatusCode.NotFound)]
+    [InlineData(HttpStatusCode.NotAcceptable, HttpStatusCode.BadGateway)]
+    public async Task Post_APICall_Creates_RepositoryOwner_Connection(
+        HttpStatusCode statusCode,
+        HttpStatusCode expectedStatusCode)
+    {
+        factory.RepositoryServiceState.UseRealService = true;
+        factory.GitHubHandler.SendFunc = request =>
+        {
+            var path = request.RequestUri?.AbsolutePath;
+
+            if (path == "/users/TestOwner")
+                return new HttpResponseMessage(statusCode);
+
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
+        };
+
+
+        var client = factory.CreateClient();
+
+        var request = new CreateRepositoryRequest
+        {
+            Repository = new Repository
+            {
+                Name = "Test Repository",
+                Provider = "GitHub",
+                Owner = "TestOwner",
+                Project = "TestProject",
+                RepositoryName = "TestRepository"
+            },
+            Credential = new RepositoryCredential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        factory.RepositoryStore.FindResult = null;
+        factory.CredentialStore.StoredCredential = null;
+
+
+        var response = await client.PostAsJsonAsync("/api/repositories", request, cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedStatusCode, response.StatusCode);
+
+        Assert.Equal(1, factory.GitHubHandler.CallCount);
+        Assert.Equal(0, factory.AzureDevOpsHandler.CallCount);
     }
 
     /// <summary>

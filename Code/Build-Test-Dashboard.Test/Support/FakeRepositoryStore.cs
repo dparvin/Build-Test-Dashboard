@@ -18,12 +18,29 @@ public class FakeRepositoryStore : IRepositoryStore
     public Repository? FindResult { get; set; }
 
     /// <summary>
+    /// Gets or sets the store exception.
+    /// </summary>
+    /// <value>
+    /// The store exception.
+    /// </value>
+    public Exception? StoreException { get; set; } = null;
+
+    /// <summary>
+    /// Gets or sets the delete exception.
+    /// </summary>
+    /// <value>
+    /// The delete exception.
+    /// </value>
+    public Exception? DeleteException { get; set; } = null;
+
+    /// <summary>
     /// Gets the stored repository.
     /// </summary>
     /// <value>
     /// The stored repository.
     /// </value>
-    public Repository? StoredRepository { get; private set; }
+    public Repository? StoredRepository
+    { get; private set; }
 
     /// <summary>
     /// Gets the find call count.
@@ -94,6 +111,9 @@ public class FakeRepositoryStore : IRepositoryStore
     {
         StoreCallCount++;
 
+        if (StoreException != null)
+            throw StoreException;
+
         if (repository.Id == 0)
             repository.Id = 1;
 
@@ -113,6 +133,9 @@ public class FakeRepositoryStore : IRepositoryStore
         CancellationToken cancellationToken = default)
     {
         DeleteCallCount++;
+
+        if (DeleteException != null)
+            throw DeleteException;
 
         if (StoredRepository?.Id != repositoryId)
             return Task.FromResult(false);
