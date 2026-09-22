@@ -47,4 +47,12 @@ public class Repository
     /// The repository name.
     /// </value>
     public string RepositoryName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the builds.
+    /// </summary>
+    /// <value>
+    /// The builds.
+    /// </value>
+    public ICollection<Build> Builds { get; set; } = [];
 }

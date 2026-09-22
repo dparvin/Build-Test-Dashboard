@@ -55,4 +55,12 @@ public class TestRun
     /// The duration.
     /// </value>
     public TimeSpan Duration { get; set; }
+
+    /// <summary>
+    /// Gets or sets the build.
+    /// </summary>
+    /// <value>
+    /// The build.
+    /// </value>
+    public Build Build { get; set; } = null!;
 }

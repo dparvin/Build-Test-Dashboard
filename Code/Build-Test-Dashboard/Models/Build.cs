@@ -62,4 +62,19 @@ public class Build
     /// The status.
     /// </value>
     public string Status { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the repository.
+    /// </summary>
+    /// <value>
+    /// The repository.
+    /// </value>
+    public Repository Repository { get; set; } = null!;
+    /// <summary>
+    /// Gets or sets the test runs.
+    /// </summary>
+    /// <value>
+    /// The test runs.
+    /// </value>
+    public ICollection<TestRun> TestRuns { get; set; } = [];
 }
