@@ -1,11 +1,17 @@
+using Build_Test_Dashboard.Data;
 using Build_Test_Dashboard.Interface;
 using Build_Test_Dashboard.Providers;
 using Build_Test_Dashboard.Services;
 using Build_Test_Dashboard.Stores;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddDbContext<DashboardDbContext>(options =>
+    options.UseSqlite(
+        builder.Configuration.GetConnectionString("Dashboard")));
 
 builder.Services.AddControllers();
 
