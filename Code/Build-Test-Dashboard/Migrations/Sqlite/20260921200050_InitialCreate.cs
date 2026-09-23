@@ -1,9 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Build_Test_Dashboard.Migrations
+namespace Build_Test_Dashboard.Migrations.Sqlite
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

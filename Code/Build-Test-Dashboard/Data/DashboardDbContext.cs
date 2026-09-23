@@ -8,7 +8,7 @@ namespace Build_Test_Dashboard.Data;
 /// </summary>
 /// <seealso cref="DbContext" />
 public class DashboardDbContext(
-    DbContextOptions<DashboardDbContext> options)
+    DbContextOptions options)
     : DbContext(options)
 {
     /// <summary>

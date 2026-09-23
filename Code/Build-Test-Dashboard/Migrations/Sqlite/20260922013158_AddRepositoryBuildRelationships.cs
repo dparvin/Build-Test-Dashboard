@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Build_Test_Dashboard.Migrations
+namespace Build_Test_Dashboard.Migrations.Sqlite
 {
     /// <inheritdoc />
     public partial class AddRepositoryBuildRelationships : Migration

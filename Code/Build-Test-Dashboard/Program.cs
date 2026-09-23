@@ -1,4 +1,5 @@
 using Build_Test_Dashboard.Data;
+using Build_Test_Dashboard.Enums;
 using Build_Test_Dashboard.Interface;
 using Build_Test_Dashboard.Providers;
 using Build_Test_Dashboard.Services;
@@ -9,9 +10,39 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+var database = builder.Configuration
+    .GetSection("Database");
+
+var provider = Enum.Parse<DatabaseProvider>(database["Provider"] ?? "sqlite", true);
+var connectionString = database["ConnectionString"];
+
 builder.Services.AddDbContext<DashboardDbContext>(options =>
-    options.UseSqlite(
-        builder.Configuration.GetConnectionString("Dashboard")));
+{
+    switch (provider)
+    {
+        case DatabaseProvider.Sqlite:
+            options.UseSqlite(connectionString,
+                    sqliteOptions =>
+                    {
+                        sqliteOptions.MigrationsAssembly(
+                            typeof(Build_Test_Dashboard.Migrations.Sqlite.InitialCreate).Assembly.FullName);
+                    });
+            break;
+
+        case DatabaseProvider.SqlServer:
+            options.UseSqlServer(connectionString,
+                    sqlServerOptions =>
+                    {
+                        sqlServerOptions.MigrationsAssembly(
+                            typeof(Build_Test_Dashboard.Migrations.SqlServer.InitialCreate).Assembly.FullName);
+                    });
+            break;
+
+        default:
+            throw new InvalidOperationException(
+                $"Unsupported database provider: {provider}");
+    }
+});
 
 builder.Services.AddControllers();
 

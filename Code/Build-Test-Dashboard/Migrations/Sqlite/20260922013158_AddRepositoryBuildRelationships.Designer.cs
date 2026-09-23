@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Build_Test_Dashboard.Migrations
+namespace Build_Test_Dashboard.Migrations.Sqlite
 {
     [DbContext(typeof(DashboardDbContext))]
-    [Migration("20260921200050_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260922013158_AddRepositoryBuildRelationships")]
+    partial class AddRepositoryBuildRelationships
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,8 @@ namespace Build_Test_Dashboard.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RepositoryId");
 
                     b.ToTable("Builds");
                 });
@@ -113,7 +115,41 @@ namespace Build_Test_Dashboard.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BuildId");
+
                     b.ToTable("TestRuns");
+                });
+
+            modelBuilder.Entity("Build_Test_Dashboard.Models.Build", b =>
+                {
+                    b.HasOne("Build_Test_Dashboard.Models.Repository", "Repository")
+                        .WithMany("Builds")
+                        .HasForeignKey("RepositoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Repository");
+                });
+
+            modelBuilder.Entity("Build_Test_Dashboard.Models.TestRun", b =>
+                {
+                    b.HasOne("Build_Test_Dashboard.Models.Build", "Build")
+                        .WithMany("TestRuns")
+                        .HasForeignKey("BuildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Build");
+                });
+
+            modelBuilder.Entity("Build_Test_Dashboard.Models.Build", b =>
+                {
+                    b.Navigation("TestRuns");
+                });
+
+            modelBuilder.Entity("Build_Test_Dashboard.Models.Repository", b =>
+                {
+                    b.Navigation("Builds");
                 });
 #pragma warning restore 612, 618
         }

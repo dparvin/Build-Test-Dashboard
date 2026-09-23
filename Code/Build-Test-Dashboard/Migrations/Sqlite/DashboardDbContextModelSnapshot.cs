@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Build_Test_Dashboard.Migrations
+namespace Build_Test_Dashboard.Migrations.Sqlite
 {
     [DbContext(typeof(DashboardDbContext))]
     partial class DashboardDbContextModelSnapshot : ModelSnapshot
