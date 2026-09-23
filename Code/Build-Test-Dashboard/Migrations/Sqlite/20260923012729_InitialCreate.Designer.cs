@@ -3,16 +3,19 @@ using System;
 using Build_Test_Dashboard.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace Build_Test_Dashboard.Migrations.Sqlite
 {
-    [DbContext(typeof(DashboardDbContext))]
-    partial class DashboardDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(SqliteDashboardDbContext))]
+    [Migration("20260923012729_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
