@@ -430,3 +430,4 @@ FodyWeavers.xsd
 
 # SQLite databases
 *.db
+/Code/Build-Test-Dashboard.Test/CoverageReport

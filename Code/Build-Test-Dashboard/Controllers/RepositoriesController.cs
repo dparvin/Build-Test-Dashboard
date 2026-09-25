@@ -17,7 +17,7 @@ public class RepositoriesController(
 {
     private readonly IRepositoryService repositoryService = repositoryService;
 
-    #region GET calls ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    #region GET calls ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     /// <summary>
     /// Gets a list of repositories.

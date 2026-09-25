@@ -16,8 +16,14 @@ namespace Build_Test_Dashboard.Test;
 /// </summary>
 public class RepositoriesControllerTests
 {
+    /// <summary>
+    /// The test Web Application factory
+    /// </summary>
     private readonly TestWebApplicationFactory factory;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RepositoriesControllerTests"/> class.
+    /// </summary>
     public RepositoriesControllerTests()
     {
         factory = new TestWebApplicationFactory();
@@ -29,7 +35,7 @@ public class RepositoriesControllerTests
     [Fact]
     public void Get_ReturnsRepositories()
     {
-        var repositoryStore = new RepositoryStore();
+        var repositoryStore = AllRepositories;
         var credentialStore = new WindowsCredentialStore();
         var providers = Array.Empty<IRepositoryProvider>();
 
@@ -48,7 +54,7 @@ public class RepositoriesControllerTests
     [Fact]
     public void Get_ReturnsRepository()
     {
-        var repositoryStore = new RepositoryStore();
+        var repositoryStore = AllRepositories;
         var credentialStore = new WindowsCredentialStore();
         var providers = Array.Empty<IRepositoryProvider>();
 
@@ -66,7 +72,7 @@ public class RepositoriesControllerTests
     [Fact]
     public void Get_ReturnsRepositoryBuilds()
     {
-        var repositoryStore = new RepositoryStore();
+        var repositoryStore = AllRepositories;
         var credentialStore = new WindowsCredentialStore();
         var providers = Array.Empty<IRepositoryProvider>();
 
@@ -170,6 +176,11 @@ public class RepositoriesControllerTests
         Assert.Equal((provider == "AzureDevOps" ? 1 : 0), factory.AzureDevOpsHandler.CallCount);
     }
 
+    /// <summary>
+    /// Gits the hub send function.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
     private HttpResponseMessage GitHubSendFunc(HttpRequestMessage request)
     {
         var path = request.RequestUri?.AbsolutePath;
@@ -181,6 +192,12 @@ public class RepositoriesControllerTests
         return new HttpResponseMessage(HttpStatusCode.NotFound);
     }
 
+    /// <summary>
+    /// Azures the dev ops send function.
+    /// </summary>
+    /// <param name="arg">The argument.</param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     private HttpResponseMessage AzureDevOpsSendFunc(HttpRequestMessage arg)
     {
         throw new NotImplementedException();
@@ -225,7 +242,6 @@ public class RepositoriesControllerTests
 
             return new HttpResponseMessage(HttpStatusCode.NotFound);
         };
-
 
         var client = factory.CreateClient();
 
@@ -310,6 +326,34 @@ public class RepositoriesControllerTests
         if (expectedMessage != null)
             Assert.Equal(expectedMessage, message);
     }
+
+    /// <summary>
+    /// A Repository Store
+    /// </summary>
+    readonly IRepositoryStore AllRepositories = new FakeRepositoryStore
+    {
+        AllStoredRepositories =
+        [
+            new Repository
+            {
+                Id = 1,
+                Name = "Build/Test Dashboard",
+                Provider = "GitHub",
+                Owner = "dparvin",
+                Project = "",
+                RepositoryName = "Build-Test-Dashboard"
+            },
+            new Repository
+            {
+                Id = 2,
+                Name = "PropertyGridHelpers",
+                Provider = "GitHub",
+                Owner = "dparvin",
+                Project = "",
+                RepositoryName = "PropertyGridHelpers"
+            }
+        ]
+    };
 
     /// <summary>
     /// Outputs the specified message.

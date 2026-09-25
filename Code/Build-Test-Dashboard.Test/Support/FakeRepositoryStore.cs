@@ -39,8 +39,15 @@ public class FakeRepositoryStore : IRepositoryStore
     /// <value>
     /// The stored repository.
     /// </value>
-    public Repository? StoredRepository
-    { get; private set; }
+    public Repository? StoredRepository { get; private set; }
+
+    /// <summary>
+    /// Gets all the stored repositories.
+    /// </summary>
+    /// <value>
+    /// All stored repositories.
+    /// </value>
+    public IEnumerable<Repository>? AllStoredRepositories { get; set; } = null;
 
     /// <summary>
     /// Gets the find call count.
@@ -79,6 +86,17 @@ public class FakeRepositoryStore : IRepositoryStore
         FindCallCount++;
 
         return Task.FromResult(FindResult);
+    }
+
+    /// <summary>
+    /// Gets all of the repositories asynchronously.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    public Task<IEnumerable<Repository>> GetAllAsync(
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(AllStoredRepositories ?? []);
     }
 
     /// <summary>

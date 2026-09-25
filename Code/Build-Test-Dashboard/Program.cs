@@ -1,3 +1,4 @@
+using Build_Test_Dashboard.Configuration;
 using Build_Test_Dashboard.Data;
 using Build_Test_Dashboard.Enums;
 using Build_Test_Dashboard.Interface;
@@ -10,11 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-var database = builder.Configuration
-    .GetSection("Database");
-
-var provider = Enum.Parse<DatabaseProvider>(database["Provider"] ?? "sqlite", true);
-var connectionString = database["ConnectionString"];
+var (provider, connectionString) = DatabaseConfiguration.GetDatabaseProvider(builder.Configuration);
 
 builder.Services.AddDbContext<DashboardDbContext>(options =>
 {
@@ -74,9 +71,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
-}
 
 app.UseHttpsRedirection();
 
@@ -85,3 +80,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+

@@ -13,6 +13,13 @@ public interface IRepositoryStore
     Task<Repository> StoreAsync(Repository repository, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Gets all of the repositories asynchronously.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    Task<IEnumerable<Repository>> GetAllAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets the repository asynchronously.
     /// </summary>
     /// <param name="repositoryId">The repository identifier.</param>
