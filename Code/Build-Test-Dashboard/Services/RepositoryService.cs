@@ -1,6 +1,7 @@
 ﻿using Build_Test_Dashboard.Enums;
 using Build_Test_Dashboard.Exceptions;
 using Build_Test_Dashboard.Interface;
+using Build_Test_Dashboard.Models;
 using Build_Test_Dashboard.Requests;
 using Build_Test_Dashboard.Results;
 
@@ -130,4 +131,24 @@ public class RepositoryService(
             Repository = repository
         };
     }
+
+    /// <summary>
+    /// Gets all of the repositories asynchronous.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    public async Task<IEnumerable<Repository>> GetAllAsync(
+        CancellationToken cancellationToken = default) =>
+        await repositoryStore.GetAllAsync(cancellationToken);
+
+    /// <summary>
+    /// Gets the repository asynchronous.
+    /// </summary>
+    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    public async Task<Repository?> GetAsync(
+        int repositoryId,
+        CancellationToken cancellationToken = default) =>
+        await repositoryStore.GetAsync(repositoryId, cancellationToken);
 }

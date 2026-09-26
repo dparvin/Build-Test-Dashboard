@@ -6,6 +6,7 @@ using Build_Test_Dashboard.Requests;
 using Build_Test_Dashboard.Services;
 using Build_Test_Dashboard.Stores;
 using Build_Test_Dashboard.Test.Support;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -33,16 +34,18 @@ public class RepositoriesControllerTests
     /// The Get call returns a list of repositories.
     /// </summary>
     [Fact]
-    public void Get_ReturnsRepositories()
+    public async Task Get_ReturnsRepositories()
     {
         var repositoryStore = AllRepositories;
+        var buildStore = new FakeBuildStore();
         var credentialStore = new WindowsCredentialStore();
         var providers = Array.Empty<IRepositoryProvider>();
 
         var service = new RepositoryService(providers, repositoryStore, credentialStore);
+        var buildService = new BuildService(buildStore);
 
-        var controller = new RepositoriesController(service);
-        var result = controller.Get();
+        var controller = new RepositoriesController(service, buildService);
+        var result = await controller.Get(TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
         Assert.NotEmpty(result);
@@ -52,16 +55,39 @@ public class RepositoriesControllerTests
     /// The Get call returns a repository.
     /// </summary>
     [Fact]
-    public void Get_ReturnsRepository()
+    public async Task Get_Returns_a_Repository()
     {
         var repositoryStore = AllRepositories;
+        var buildStore = new FakeBuildStore();
         var credentialStore = new WindowsCredentialStore();
         var providers = Array.Empty<IRepositoryProvider>();
 
         var service = new RepositoryService(providers, repositoryStore, credentialStore);
+        var buildService = new BuildService(buildStore);
 
-        var controller = new RepositoriesController(service);
-        var result = controller.Get(1);
+        var controller = new RepositoriesController(service, buildService);
+        var result = await controller.Get(1, TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+    }
+
+    /// <summary>
+    /// The Get call returns a repository.
+    /// </summary>
+    [Fact]
+    public async Task Get_Returns_No_Repository()
+    {
+        var repositoryStore = AllRepositories;
+        var credentialStore = new WindowsCredentialStore();
+        var buildStore = new FakeBuildStore();
+        var providers = Array.Empty<IRepositoryProvider>();
+
+        var service = new RepositoryService(providers, repositoryStore, credentialStore);
+
+        var buildService = new BuildService(buildStore);
+
+        var controller = new RepositoriesController(service, buildService);
+        var result = await controller.Get(3, TestContext.Current.CancellationToken);
 
         Assert.NotNull(result);
     }
@@ -70,19 +96,37 @@ public class RepositoriesControllerTests
     /// The Get Builds call returns a repository builds.
     /// </summary>
     [Fact]
-    public void Get_ReturnsRepositoryBuilds()
+    public async Task Get_ReturnsRepositoryBuilds()
     {
         var repositoryStore = AllRepositories;
         var credentialStore = new WindowsCredentialStore();
+        var buildStore = AllBuilds;
         var providers = Array.Empty<IRepositoryProvider>();
 
-        var service = new RepositoryService(providers, repositoryStore, credentialStore);
+        var service = new RepositoryService(
+            providers,
+            repositoryStore,
+            credentialStore);
 
-        var controller = new RepositoriesController(service);
-        var result = controller.GetBuilds(1);
+        var buildService = new BuildService(buildStore);
 
-        Assert.NotNull(result);
-        Assert.NotEmpty(result);
+        var controller = new RepositoriesController(
+            service,
+            buildService);
+
+        var result =
+            await controller.GetBuilds(
+                1,
+                TestContext.Current.CancellationToken);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var builds =
+            Assert.IsType<IEnumerable<Build>>(okResult.Value, exactMatch: false);
+
+        Assert.Equal(2, builds.Count());
+        Assert.All(
+            builds,
+            build => Assert.Equal(1, build.RepositoryId));
     }
 
     /// <summary>
@@ -92,7 +136,8 @@ public class RepositoriesControllerTests
     public async Task Get_APICall_Returns_Repositories()
     {
         var client = factory.CreateClient();
-        factory.RepositoryServiceState.UseRealService = true;
+        factory.RepositoryServiceState.UseRealService = false;
+        factory.RepositoryServiceState.RepositoryList = ((FakeRepositoryStore)AllRepositories).AllStoredRepositories;
 
         var response = await client.GetAsync("/api/repositories", TestContext.Current.CancellationToken);
 
@@ -351,6 +396,34 @@ public class RepositoriesControllerTests
                 Owner = "dparvin",
                 Project = "",
                 RepositoryName = "PropertyGridHelpers"
+            }
+        ]
+    };
+
+    /// <summary>
+    /// All builds
+    /// </summary>
+    readonly IBuildStore AllBuilds = new FakeBuildStore
+    {
+        Builds =
+        [
+            new Build
+            {
+                Id = 1,
+                RepositoryId = 1,
+                BuildNumber = "100",
+                Branch = "main",
+                Commit = "abc123",
+                Status = "Succeeded"
+            },
+            new Build
+            {
+                Id = 2,
+                RepositoryId = 1,
+                BuildNumber = "101",
+                Branch = "main",
+                Commit = "def456",
+                Status = "Succeeded"
             }
         ]
     };

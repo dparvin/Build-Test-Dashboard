@@ -111,10 +111,22 @@ public class FakeRepositoryStore : IRepositoryStore
         int repositoryId,
         CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(
-            StoredRepository?.Id == repositoryId
-                ? StoredRepository
-                : null);
+        if (StoredRepository is not null)
+        {
+            return Task.FromResult(
+                StoredRepository.Id == repositoryId
+                    ? StoredRepository
+                    : null);
+        }
+
+        if (AllStoredRepositories is not null)
+        {
+            return Task.FromResult(
+                AllStoredRepositories.FirstOrDefault(
+                    repository => repository.Id == repositoryId));
+        }
+
+        return Task.FromResult<Repository?>(null);
     }
 
     /// <summary>

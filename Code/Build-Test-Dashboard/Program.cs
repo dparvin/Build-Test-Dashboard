@@ -62,6 +62,9 @@ builder.Services.AddScoped<IWindowsCredentialManager, WindowsCredentialManager>(
 builder.Services.AddScoped<IRepositoryStore, RepositoryStore>();
 builder.Services.AddScoped<ICredentialStore, WindowsCredentialStore>();
 
+builder.Services.AddScoped<IBuildStore, BuildStore>();
+builder.Services.AddScoped<IBuildService, BuildService>();
+
 builder.Services.AddScoped<IRepositoryService, RepositoryService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

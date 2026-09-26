@@ -13,9 +13,17 @@ namespace Build_Test_Dashboard.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class RepositoriesController(
-    IRepositoryService repositoryService) : ControllerBase
+    IRepositoryService repositoryService,
+    IBuildService buildService) : ControllerBase
 {
+    /// <summary>
+    /// The repository service
+    /// </summary>
     private readonly IRepositoryService repositoryService = repositoryService;
+    /// <summary>
+    /// The build service
+    /// </summary>
+    private readonly IBuildService buildService = buildService;
 
     #region GET calls ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -24,38 +32,10 @@ public class RepositoriesController(
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public IEnumerable<Repository> Get()
+    public async Task<IEnumerable<Repository>> Get(
+        CancellationToken cancellationToken)
     {
-        return
-        [
-            new Repository
-            {
-                Id = 1,
-                Name = "Build/Test Dashboard",
-                Provider = "GitHub",
-                Owner = "dparvin",
-                Project = "",
-                RepositoryName = "Build-Test-Dashboard"
-            },
-            new Repository
-            {
-                Id = 2,
-                Name = "PropertyGridHelpers",
-                Provider = "GitHub",
-                Owner = "dparvin",
-                Project = "",
-                RepositoryName = "PropertyGridHelpers"
-            },
-            new Repository
-            {
-                Id = 3,
-                Name = "AnotherRepository",
-                Provider = "AzureDevOps",
-                Owner = "SomeOrganization",
-                Project = "SomeProject",
-                RepositoryName = "AnotherRepository"
-            }
-        ];
+        return await repositoryService.GetAllAsync(cancellationToken);
     }
 
     /// <summary>
@@ -64,9 +44,19 @@ public class RepositoriesController(
     /// <param name="id">The identifier of the repository.</param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public Repository? Get(int id)
+    public async Task<ActionResult<Repository>> Get(
+        int id,
+        CancellationToken cancellationToken)
     {
-        return Get().FirstOrDefault(repository => repository.Id == id);
+        var repository =
+            await repositoryService.GetAsync(
+                id,
+                cancellationToken);
+
+        if (repository is null)
+            return NotFound();
+
+        return Ok(repository);
     }
 
     /// <summary>
@@ -75,33 +65,16 @@ public class RepositoriesController(
     /// <param name="id">The identifier.</param>
     /// <returns></returns>
     [HttpGet("{id}/builds")]
-    public IEnumerable<Build> GetBuilds(int id)
+    public async Task<ActionResult<IEnumerable<Build>>> GetBuilds(
+        int id,
+        CancellationToken cancellationToken)
     {
-        return
-        [
-            new Build
-            {
-                Id = 1,
-                RepositoryId = id,
-                BuildNumber = "100",
-                Branch = "main",
-                Commit = "abc123",
-                Started = DateTime.UtcNow.AddMinutes(-10),
-                Completed = DateTime.UtcNow.AddMinutes(-5),
-                Status = "Succeeded"
-            },
-            new Build
-            {
-                Id = 2,
-                RepositoryId = id,
-                BuildNumber = "101",
-                Branch = "main",
-                Commit = "def456",
-                Started = DateTime.UtcNow.AddMinutes(-4),
-                Completed = DateTime.UtcNow,
-                Status = "Succeeded"
-            }
-        ];
+        var builds =
+            await buildService.GetAllAsync(
+                id,
+                cancellationToken);
+
+        return Ok(builds);
     }
 
     #endregion

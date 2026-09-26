@@ -1,4 +1,5 @@
 ﻿using Build_Test_Dashboard.Enums;
+using Build_Test_Dashboard.Models;
 
 namespace Build_Test_Dashboard.Test.Support;
 
@@ -19,4 +20,12 @@ public class FakeRepositoryServiceState
     /// The validation result.
     /// </value>
     public RepositoryValidationResult ValidationResult { get; set; } = RepositoryValidationResult.Valid;
+
+    /// <summary>
+    /// Gets or sets the repository list.
+    /// </summary>
+    /// <value>
+    /// The repository list.
+    /// </value>
+    public IEnumerable<Repository>? RepositoryList { get; set; } = null;
 }
