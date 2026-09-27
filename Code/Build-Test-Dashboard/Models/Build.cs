@@ -19,6 +19,18 @@ public class Build
     /// The repository identifier.
     /// </value>
     public int RepositoryId { get; set; }
+    /// <summary>
+    /// Gets or sets the external build identifier.
+    /// </summary>
+    /// <value>
+    /// The external build identifier.
+    /// </value>
+    /// <remarks>
+    /// This identifies a specific build execution in the external system.
+    /// If a build is run more than once, this identifier will change even
+    /// if the other build data stays mostly the same.
+    /// </remarks>
+    public string ExternalBuildId { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets or sets the build number.

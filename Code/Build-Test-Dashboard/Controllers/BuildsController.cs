@@ -1,4 +1,5 @@
-﻿using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Interface;
+using Build_Test_Dashboard.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Build_Test_Dashboard.Controllers;
@@ -6,28 +7,32 @@ namespace Build_Test_Dashboard.Controllers;
 /// <summary>
 /// Represents the controller for managing builds in the build and test dashboard.
 /// </summary>
-/// <seealso cref="Microsoft.AspNetCore.Mvc.ControllerBase" />
+/// <seealso cref="ControllerBase" />
 [Route("api/[controller]")]
 [ApiController]
-public class BuildsController : ControllerBase
+public class BuildsController(IBuildService buildService) : ControllerBase
 {
+    /// <summary>
+    /// The build service
+    /// </summary>
+    private readonly IBuildService buildService = buildService;
+
+    /// <summary>
+    /// Gets the specified build.
+    /// </summary>
+    /// <param name="id">The build.</param>
+    /// <returns></returns>
     [HttpGet("{id}")]
     public Build? Get(int id)
     {
-        // Temporary test data
-        return new Build
-        {
-            Id = id,
-            RepositoryId = 1,
-            BuildNumber = "100",
-            Branch = "main",
-            Commit = "abc123",
-            Started = DateTime.UtcNow.AddMinutes(-10),
-            Completed = DateTime.UtcNow.AddMinutes(-5),
-            Status = "Succeeded"
-        };
+        return buildService.GetAsync(id);
     }
 
+    /// <summary>
+    /// Gets the tests that were run on a build.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <returns></returns>
     [HttpGet("{id}/tests")]
     public IEnumerable<TestRun> GetTests(int id)
     {

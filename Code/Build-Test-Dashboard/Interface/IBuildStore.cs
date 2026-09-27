@@ -40,6 +40,20 @@ public interface IBuildStore
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Finds the build asynchronously.
+    /// </summary>
+    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="externalBuildId">The external build identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    /// <c>null</c> if the build is not found, or the build record if it is found.
+    /// </returns>
+    Task<Build?> FindAsync(
+        int repositoryId,
+        string externalBuildId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Deletes the build asynchronously.
     /// </summary>
     /// <param name="buildId">The build identifier.</param>

@@ -14,6 +14,7 @@ public class CreateRepositoryRequest
     /// The repository.
     /// </value>
     public Repository Repository { get; set; } = new();
+
     /// <summary>
     /// Gets or sets the repository credential.
     /// </summary>

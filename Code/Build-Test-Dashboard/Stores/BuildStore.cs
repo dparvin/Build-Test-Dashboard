@@ -17,12 +17,13 @@ public class BuildStore(DashboardDbContext context) : IBuildStore
     private readonly DashboardDbContext context = context;
 
     /// <summary>
-    /// Stores the asynchronous.
+    /// Stores the build asynchronously.
     /// </summary>
     /// <param name="build">The build.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <returns>
+    /// The stored build.
+    /// </returns>
     public async Task<Build> StoreAsync(
         Build build,
         CancellationToken cancellationToken = default)
@@ -35,12 +36,13 @@ public class BuildStore(DashboardDbContext context) : IBuildStore
     }
 
     /// <summary>
-    /// Gets the asynchronous.
+    /// Gets a build asynchronously.
     /// </summary>
     /// <param name="buildId">The build identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <returns>
+    ///   <c>null</c> if the build is not found, or the build record if it is found.
+    /// </returns>
     public async Task<Build?> GetAsync(
         int buildId,
         CancellationToken cancellationToken = default) =>
@@ -51,11 +53,13 @@ public class BuildStore(DashboardDbContext context) : IBuildStore
                 cancellationToken);
 
     /// <summary>
-    /// Gets the by repository identifier asynchronous.
+    /// Gets all builds for a repository asynchronously.
     /// </summary>
     /// <param name="repositoryId">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
+    /// <returns>
+    /// All of the builds for a repository.
+    /// </returns>
     public async Task<IEnumerable<Build>> GetAllAsync(
         int repositoryId,
         CancellationToken cancellationToken = default) =>
@@ -65,13 +69,31 @@ public class BuildStore(DashboardDbContext context) : IBuildStore
             .ToListAsync(cancellationToken);
 
     /// <summary>
-    /// Deletes the asynchronous.
+    /// Finds the build asynchronously.
     /// </summary>
     /// <param name="repositoryId">The repository identifier.</param>
-    /// <param name="buildId">The build identifier.</param>
+    /// <param name="externalBuildId">The external build identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    public async Task<Build?> FindAsync(
+        int repositoryId,
+        string externalBuildId,
+        CancellationToken cancellationToken = default) =>
+        await context.Builds
+            .FirstOrDefaultAsync(
+                build =>
+                    build.RepositoryId == repositoryId &&
+                    build.ExternalBuildId == externalBuildId,
+                cancellationToken);
+
+    /// <summary>
+    /// Deletes the build asynchronously.
+    /// </summary>
+    /// <param name="buildId">The build identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    ///   <c>true</c> when the build existed and was deleted; otherwise <c>false</c>.
+    /// </returns>
     public async Task<bool> DeleteAsync(
         int buildId,
         CancellationToken cancellationToken = default)
