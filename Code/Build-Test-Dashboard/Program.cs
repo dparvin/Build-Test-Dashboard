@@ -18,21 +18,23 @@ builder.Services.AddDbContext<DashboardDbContext>(options =>
     switch (provider)
     {
         case DatabaseProvider.Sqlite:
-            options.UseSqlite(connectionString,
-                    sqliteOptions =>
-                    {
-                        sqliteOptions.MigrationsAssembly(
-                            typeof(Build_Test_Dashboard.Migrations.Sqlite.InitialCreate).Assembly.FullName);
-                    });
+            //options.UseSqlite(connectionString,
+            //        sqliteOptions =>
+            //        {
+            //            sqliteOptions.MigrationsAssembly(
+            //                typeof(Build_Test_Dashboard.Migrations.SQLite.InitialCreate).Assembly.FullName);
+            //        });
+            options.UseSqlite(connectionString);
             break;
 
         case DatabaseProvider.SqlServer:
-            options.UseSqlServer(connectionString,
-                    sqlServerOptions =>
-                    {
-                        sqlServerOptions.MigrationsAssembly(
-                            typeof(Build_Test_Dashboard.Migrations.SqlServer.InitialCreate).Assembly.FullName);
-                    });
+            //options.UseSqlServer(connectionString,
+            //        sqlServerOptions =>
+            //        {
+            //            sqlServerOptions.MigrationsAssembly(
+            //                typeof(Build_Test_Dashboard.Migrations.SqlServer.InitialCreate).Assembly.FullName);
+            //        });
+            options.UseSqlServer(connectionString);
             break;
 
         default:

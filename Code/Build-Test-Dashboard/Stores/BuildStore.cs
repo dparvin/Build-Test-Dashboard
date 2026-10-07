@@ -53,36 +53,52 @@ public class BuildStore(DashboardDbContext context) : IBuildStore
                 cancellationToken);
 
     /// <summary>
+    /// Gets the by source repository asynchronous.
+    /// </summary>
+    /// <param name="sourceRepositoryId">The source repository identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    public async Task<IEnumerable<Build>> GetBySourceRepositoryAsync(
+        int sourceRepositoryId,
+        CancellationToken cancellationToken = default) =>
+        await context.Builds
+            .Where(build => build.SourceRepositoryId == sourceRepositoryId)
+            .OrderBy(build => build.Id)
+            .ToListAsync(cancellationToken);
+
+    /// <summary>
     /// Gets all builds for a repository asynchronously.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="buildConnectionId">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// All of the builds for a repository.
     /// </returns>
     public async Task<IEnumerable<Build>> GetAllAsync(
-        int repositoryId,
+        int buildConnectionId,
         CancellationToken cancellationToken = default) =>
         await context.Builds
-            .Where(build => build.RepositoryId == repositoryId)
+            .Where(build => build.BuildConnectionId == buildConnectionId)
             .OrderBy(build => build.Id)
             .ToListAsync(cancellationToken);
 
     /// <summary>
     /// Finds the build asynchronously.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="buildConnectionId">The build connection identifier.</param>
     /// <param name="externalBuildId">The external build identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
+    /// <returns>
+    ///   <c>null</c> if the build is not found, or the build record if it is found.
+    /// </returns>
     public async Task<Build?> FindAsync(
-        int repositoryId,
+        int buildConnectionId,
         string externalBuildId,
         CancellationToken cancellationToken = default) =>
         await context.Builds
             .FirstOrDefaultAsync(
                 build =>
-                    build.RepositoryId == repositoryId &&
+                    build.BuildConnectionId == buildConnectionId &&
                     build.ExternalBuildId == externalBuildId,
                 cancellationToken);
 

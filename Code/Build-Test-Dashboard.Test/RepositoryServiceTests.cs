@@ -7,15 +7,27 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Build_Test_Dashboard.Test;
 
+/// <summary>
+/// Tests for the <see cref="RepositoryService"/> class
+/// </summary>
 public class RepositoryServiceTests
 {
+    /// <summary>
+    /// The factory
+    /// </summary>
     private readonly TestWebApplicationFactory factory;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RepositoryServiceTests"/> class.
+    /// </summary>
     public RepositoryServiceTests()
     {
         factory = new TestWebApplicationFactory();
     }
 
+    /// <summary>
+    /// Saves the asynchronous credential store fails new repository rolls back repository.
+    /// </summary>
     [Fact]
     public async Task SaveAsync_CredentialStoreFails_NewRepository_RollsBackRepository()
     {
@@ -57,6 +69,9 @@ public class RepositoryServiceTests
         Assert.Equal(1, factory.RepositoryStore.DeleteCallCount);
     }
 
+    /// <summary>
+    /// Saves the asynchronous credential store fails existing repository rolls back repository.
+    /// </summary>
     [Fact]
     public async Task SaveAsync_CredentialStoreFails_ExistingRepository_RollsBackRepository()
     {
@@ -116,6 +131,9 @@ public class RepositoryServiceTests
             factory.RepositoryStore.StoredRepository);
     }
 
+    /// <summary>
+    /// While Saving a new repository, where the credential store fails then rolls back repository fails.
+    /// </summary>
     [Fact]
     public async Task SaveAsync_CredentialStoreFails_NewRepository_RollsBackRepositoryFails()
     {
@@ -170,5 +188,67 @@ public class RepositoryServiceTests
             exception.RollbackException?.Message);
 
         Assert.Equal(1, factory.RepositoryStore.DeleteCallCount);
+    }
+
+    /// <summary>
+    /// Deletes an existing repository asynchronously.
+    /// </summary>
+    [Fact]
+    public async Task DeleteAsync_ExistingRepository()
+    {
+        // Arrange
+        var previousRepository = new Repository
+        {
+            Id = 42,
+            Name = "Original Repository",
+            Provider = "GitHub",
+            Owner = "OriginalOwner",
+            Project = "OriginalProject",
+            RepositoryName = "OriginalRepository"
+        };
+
+        factory.RepositoryStore.FindResult = previousRepository;
+
+        factory.CredentialStore.StoreException =
+            new InvalidOperationException("Credential store failed.");
+
+        var request = new CreateRepositoryRequest
+        {
+            Repository = new Repository
+            {
+                Name = "Updated Repository",
+                Provider = "GitHub",
+                Owner = "UpdatedOwner",
+                Project = "UpdatedProject",
+                RepositoryName = "UpdatedRepository"
+            },
+            Credential = new RepositoryCredential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        using var scope = factory.Services.CreateScope();
+
+        var repositoryService =
+            scope.ServiceProvider.GetRequiredService<RepositoryService>();
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => repositoryService.SaveAsync(
+                request,
+                TestContext.Current.CancellationToken));
+
+        // Assert
+        Assert.Equal(
+            "Credential store failed.",
+            exception.Message);
+
+        Assert.Equal(42, request.Repository.Id);
+
+        Assert.Equal(
+            previousRepository,
+            factory.RepositoryStore.StoredRepository);
     }
 }

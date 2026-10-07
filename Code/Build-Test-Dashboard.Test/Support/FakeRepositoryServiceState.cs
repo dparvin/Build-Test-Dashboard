@@ -3,13 +3,16 @@ using Build_Test_Dashboard.Models;
 
 namespace Build_Test_Dashboard.Test.Support;
 
+/// <summary>
+/// State for use in testing RepositoryService
+/// </summary>
 public class FakeRepositoryServiceState
 {
     /// <summary>
-    /// Gets or sets a value indicating whether [use real service].
+    /// Gets or sets a value indicating whether use real service.
     /// </summary>
     /// <value>
-    ///   <c>true</c> if [use real service]; otherwise, <c>false</c>.
+    ///   <c>true</c> if use real service; otherwise, <c>false</c>.
     /// </value>
     public bool UseRealService { get; set; } = true;
 

@@ -70,7 +70,7 @@ public class RepositoriesController(
         CancellationToken cancellationToken)
     {
         var builds =
-            await buildService.GetAllAsync(
+            await buildService.GetBySourceRepositoryAsync(
                 id,
                 cancellationToken);
 
@@ -122,6 +122,35 @@ public class RepositoriesController(
         }
 
         return Ok(result.Repository);
+    }
+
+    #endregion
+
+    #region DELETE calls ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    /// <summary>
+    /// Deletes the specified repository.
+    /// </summary>
+    /// <param name="id">The identifier of the repository.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    /// <c>NoContent</c> if the repository was deleted; otherwise
+    /// <c>NotFound</c>.
+    /// </returns>
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        var deleted =
+            await repositoryService.DeleteAsync(
+                id,
+                cancellationToken);
+
+        if (!deleted)
+            return NotFound();
+
+        return NoContent();
     }
 
     #endregion

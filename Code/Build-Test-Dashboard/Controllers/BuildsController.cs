@@ -21,33 +21,41 @@ public class BuildsController(IBuildService buildService) : ControllerBase
     /// Gets the specified build.
     /// </summary>
     /// <param name="id">The build.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public Build? Get(int id)
+    public async Task<ActionResult<Build>> Get(
+        int id,
+        CancellationToken cancellationToken)
     {
-        return buildService.GetAsync(id);
+        var build = await buildService.GetAsync(
+            id,
+            cancellationToken);
+
+        if (build is null)
+            return NotFound();
+
+        return Ok(build);
     }
 
     /// <summary>
     /// Gets the tests that were run on a build.
     /// </summary>
     /// <param name="id">The identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     [HttpGet("{id}/tests")]
-    public IEnumerable<TestRun> GetTests(int id)
+    public async Task<ActionResult<IEnumerable<TestRun>>> GetTests(
+        int id,
+        CancellationToken cancellationToken)
     {
-        return
-        [
-            new TestRun
-            {
-                Id = 1,
-                BuildId = id,
-                Total = 100,
-                Passed = 98,
-                Failed = 1,
-                Skipped = 1,
-                Duration = TimeSpan.FromSeconds(42)
-            }
-        ];
+        var build = await buildService.GetAsync(
+            id,
+            cancellationToken);
+
+        if (build is null)
+            return NotFound();
+
+        return Ok(build.TestRuns);
     }
 }

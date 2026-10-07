@@ -47,4 +47,14 @@ public interface IRepositoryService
     Task<SaveRepositoryResult> SaveAsync(
         CreateRepositoryRequest request,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes the repository asynchronously.
+    /// </summary>
+    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    Task<bool> DeleteAsync(
+        int repositoryId,
+        CancellationToken cancellationToken = default);
 }

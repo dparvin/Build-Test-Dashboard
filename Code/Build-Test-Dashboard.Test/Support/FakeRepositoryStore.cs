@@ -96,7 +96,9 @@ public class FakeRepositoryStore : IRepositoryStore
     public Task<IEnumerable<Repository>> GetAllAsync(
         CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(AllStoredRepositories ?? []);
+        return Task.FromResult(
+            AllStoredRepositories ??
+            []);
     }
 
     /// <summary>

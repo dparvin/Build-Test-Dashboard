@@ -8,10 +8,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Build_Test_Dashboard.Migrations.Sqlite
+namespace Build_Test_Dashboard.Migrations.SQLite
 {
     [DbContext(typeof(SqliteDashboardDbContext))]
-    [Migration("20260923012729_InitialCreate")]
+    [Migration("20261007023358_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -28,34 +28,97 @@ namespace Build_Test_Dashboard.Migrations.Sqlite
 
                     b.Property<string>("Branch")
                         .IsRequired()
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("BuildConnectionId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("BuildNumber")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Commit")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Completed")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("RepositoryId")
+                    b.Property<string>("ExternalBuildId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SourceOwner")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SourceProject")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SourceProvider")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("SourceRepositoryId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("SourceRepositoryName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Started")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Status")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RepositoryId");
+                    b.HasIndex("SourceRepositoryId");
+
+                    b.HasIndex("BuildConnectionId", "ExternalBuildId")
+                        .IsUnique();
 
                     b.ToTable("Builds");
+                });
+
+            modelBuilder.Entity("Build_Test_Dashboard.Models.BuildConnection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Configuration")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Provider", "Name")
+                        .IsUnique();
+
+                    b.ToTable("BuildConnections");
                 });
 
             modelBuilder.Entity("Build_Test_Dashboard.Models.Repository", b =>
@@ -66,22 +129,27 @@ namespace Build_Test_Dashboard.Migrations.Sqlite
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Owner")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Project")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Provider")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RepositoryName")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -122,13 +190,19 @@ namespace Build_Test_Dashboard.Migrations.Sqlite
 
             modelBuilder.Entity("Build_Test_Dashboard.Models.Build", b =>
                 {
-                    b.HasOne("Build_Test_Dashboard.Models.Repository", "Repository")
+                    b.HasOne("Build_Test_Dashboard.Models.BuildConnection", "BuildConnection")
                         .WithMany("Builds")
-                        .HasForeignKey("RepositoryId")
+                        .HasForeignKey("BuildConnectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Repository");
+                    b.HasOne("Build_Test_Dashboard.Models.Repository", "SourceRepository")
+                        .WithMany("SourceBuilds")
+                        .HasForeignKey("SourceRepositoryId");
+
+                    b.Navigation("BuildConnection");
+
+                    b.Navigation("SourceRepository");
                 });
 
             modelBuilder.Entity("Build_Test_Dashboard.Models.TestRun", b =>
@@ -147,9 +221,14 @@ namespace Build_Test_Dashboard.Migrations.Sqlite
                     b.Navigation("TestRuns");
                 });
 
-            modelBuilder.Entity("Build_Test_Dashboard.Models.Repository", b =>
+            modelBuilder.Entity("Build_Test_Dashboard.Models.BuildConnection", b =>
                 {
                     b.Navigation("Builds");
+                });
+
+            modelBuilder.Entity("Build_Test_Dashboard.Models.Repository", b =>
+                {
+                    b.Navigation("SourceBuilds");
                 });
 #pragma warning restore 612, 618
         }

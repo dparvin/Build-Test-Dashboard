@@ -32,24 +32,36 @@ public interface IBuildService
     /// <summary>
     /// Gets all builds for a repository asynchronously.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="buildConnectionId">The build connection identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>All of the builds for a repository.</returns>
+    /// <returns>
+    /// All of the builds for a repository.
+    /// </returns>
     Task<IEnumerable<Build>> GetAllAsync(
-        int repositoryId,
+        int buildConnectionId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the by source repository asynchronous.
+    /// </summary>
+    /// <param name="sourceRepositoryId">The source repository identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    Task<IEnumerable<Build>> GetBySourceRepositoryAsync(
+        int sourceRepositoryId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Finds the build asynchronously.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="buildConnectionId">The build connection identifier.</param>
     /// <param name="externalBuildId">The external build identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
-    /// <c>null</c> if the build is not found, or the build record if it is found.
+    ///   <c>null</c> if the build is not found, or the build record if it is found.
     /// </returns>
     Task<Build?> FindAsync(
-        int repositoryId,
+        int buildConnectionId,
         string externalBuildId,
         CancellationToken cancellationToken = default);
 
@@ -59,7 +71,7 @@ public interface IBuildService
     /// <param name="buildId">The build identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
-    /// <c>true</c> when the build existed and was deleted; otherwise <c>false</c>.
+    ///   <c>true</c> when the build existed and was deleted; otherwise <c>false</c>.
     /// </returns>
     Task<bool> DeleteAsync(
         int buildId,

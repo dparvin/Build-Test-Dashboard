@@ -26,6 +26,13 @@ public class DashboardDbContext(
     /// </value>
     public DbSet<Build> Builds => Set<Build>();
     /// <summary>
+    /// Gets the build connections.
+    /// </summary>
+    /// <value>
+    /// The build connections.
+    /// </value>
+    public DbSet<BuildConnection> BuildConnections => Set<BuildConnection>();
+    /// <summary>
     /// Gets the test runs.
     /// </summary>
     /// <value>

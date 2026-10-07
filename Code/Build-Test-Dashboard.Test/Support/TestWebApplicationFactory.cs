@@ -42,6 +42,14 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     public FakeRepositoryStore RepositoryStore { get; } = new();
 
     /// <summary>
+    /// Gets the build store.
+    /// </summary>
+    /// <value>
+    /// The build store.
+    /// </value>
+    public FakeBuildStore BuildStore { get; } = new();
+
+    /// <summary>
     /// Gets the credential store.
     /// </summary>
     /// <value>
@@ -56,6 +64,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     /// The repository service.
     /// </value>
     public FakeRepositoryServiceState RepositoryServiceState { get; } = new();
+    public FakeBuildServiceState BuildServiceState { get; } = new();
 
     /// <summary>
     /// Gives a fixture an opportunity to configure the application before it gets built.
@@ -71,18 +80,27 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<IRepositoryStore>();
             services.RemoveAll<ICredentialStore>();
             services.RemoveAll<IRepositoryService>();
+            services.RemoveAll<IBuildService>();
+            services.RemoveAll<IBuildStore>();
 
             services.AddSingleton(RepositoryServiceState);
+            services.AddSingleton(BuildServiceState);
 
+            services.AddScoped<BuildService>();
             services.AddScoped<RepositoryService>();
+            services.AddScoped<FakeBuildService>();
             services.AddScoped<FakeRepositoryService>();
 
             services.AddScoped<IRepositoryStore>(
                 _ => RepositoryStore);
             services.AddScoped<ICredentialStore>(
                 _ => CredentialStore);
+            services.AddScoped<IBuildStore>(
+                _ => BuildStore);
             services.AddScoped<IRepositoryService>(
                 provider => provider.GetRequiredService<FakeRepositoryService>());
+            services.AddScoped<IBuildService>(
+                provider => provider.GetRequiredService<FakeBuildService>());
 
             services.AddHttpClient<GitHubRepositoryProvider>(client =>
             {

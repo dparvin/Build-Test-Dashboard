@@ -150,5 +150,21 @@ public class RepositoryService(
     public async Task<Repository?> GetAsync(
         int repositoryId,
         CancellationToken cancellationToken = default) =>
-        await repositoryStore.GetAsync(repositoryId, cancellationToken);
+        await repositoryStore.GetAsync(
+            repositoryId,
+            cancellationToken);
+
+    /// <summary>
+    /// Deletes the repository asynchronously.
+    /// </summary>
+    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<bool> DeleteAsync(
+        int repositoryId,
+        CancellationToken cancellationToken = default) =>
+        await repositoryStore.DeleteAsync(
+            repositoryId,
+            cancellationToken);
 }

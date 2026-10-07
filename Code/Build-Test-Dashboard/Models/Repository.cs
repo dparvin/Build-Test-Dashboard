@@ -1,4 +1,6 @@
-﻿namespace Build_Test_Dashboard.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Build_Test_Dashboard.Models;
 
 /// <summary>
 /// Represents a repository in the build and test dashboard.
@@ -18,6 +20,7 @@ public class Repository
     /// <value>
     /// The name.
     /// </value>
+    [MaxLength(200)]
     public string Name { get; set; } = string.Empty;
     /// <summary>
     /// Gets or sets the provider.
@@ -25,6 +28,7 @@ public class Repository
     /// <value>
     /// The provider.
     /// </value>
+    [MaxLength(50)]
     public string Provider { get; set; } = string.Empty;
     /// <summary>
     /// Gets or sets the owner.
@@ -32,6 +36,7 @@ public class Repository
     /// <value>
     /// The owner.
     /// </value>
+    [MaxLength(200)]
     public string Owner { get; set; } = string.Empty;
     /// <summary>
     /// Gets or sets the project.
@@ -39,6 +44,7 @@ public class Repository
     /// <value>
     /// The project.
     /// </value>
+    [MaxLength(200)]
     public string Project { get; set; } = string.Empty;
     /// <summary>
     /// Gets or sets the repository name.
@@ -46,6 +52,7 @@ public class Repository
     /// <value>
     /// The repository name.
     /// </value>
+    [MaxLength(200)]
     public string RepositoryName { get; set; } = string.Empty;
 
     /// <summary>
@@ -54,5 +61,5 @@ public class Repository
     /// <value>
     /// The builds.
     /// </value>
-    public ICollection<Build> Builds { get; set; } = [];
+    public ICollection<Build> SourceBuilds { get; set; } = [];
 }
