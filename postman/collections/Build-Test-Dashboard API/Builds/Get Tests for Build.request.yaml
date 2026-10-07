@@ -1,0 +1,37 @@
+$kind: http-request
+method: GET
+url: '{{baseUrl}}/api/builds/:id/tests'
+order: 2000
+pathVariables:
+  - key: id
+    value: '1'
+    description: The identifier of the build
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200 or 404", function () {
+          pm.expect(pm.response.code).to.be.oneOf([200, 404]);
+      });
+
+      if (pm.response.code === 200) {
+          pm.test("Response is an array", function () {
+              const body = pm.response.json();
+              pm.expect(body).to.be.an("array");
+          });
+
+          if (pm.response.json().length > 0) {
+              pm.test("Each test run has total, passed, failed fields", function () {
+                  const body = pm.response.json();
+                  body.forEach(function (run) {
+                      pm.expect(run).to.have.property("total");
+                      pm.expect(run).to.have.property("passed");
+                      pm.expect(run).to.have.property("failed");
+                  });
+              });
+          }
+      }
+
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });

@@ -1,0 +1,36 @@
+$kind: http-request
+method: GET
+url: '{{baseUrl}}/api/buildconnections/:id'
+order: 2000
+pathVariables:
+  - key: id
+    value: '1'
+    description: The identifier of the build connection
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200 or 404", function () {
+          pm.expect(pm.response.code).to.be.oneOf([200, 404]);
+      });
+
+      if (pm.response.code === 200) {
+          pm.test("Response has id field", function () {
+              const body = pm.response.json();
+              pm.expect(body).to.have.property("id");
+          });
+
+          pm.test("Response has provider field", function () {
+              const body = pm.response.json();
+              pm.expect(body).to.have.property("provider");
+          });
+
+          pm.test("Response has name field", function () {
+              const body = pm.response.json();
+              pm.expect(body).to.have.property("name");
+          });
+      }
+
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });

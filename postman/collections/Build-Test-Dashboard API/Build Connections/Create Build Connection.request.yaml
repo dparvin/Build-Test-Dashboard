@@ -1,0 +1,41 @@
+$kind: http-request
+method: POST
+url: '{{baseUrl}}/api/buildconnections'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "provider": "AzureDevOps",
+      "name": "My Azure DevOps Connection",
+      "configuration": "{\"organization\":\"my-org\",\"project\":\"my-project\"}"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Response has id field", function () {
+          const body = pm.response.json();
+          pm.expect(body).to.have.property("id");
+      });
+
+      pm.test("Response has provider field", function () {
+          const body = pm.response.json();
+          pm.expect(body).to.have.property("provider");
+      });
+
+      pm.test("Response has name field", function () {
+          const body = pm.response.json();
+          pm.expect(body).to.have.property("name");
+      });
+
+      pm.test("Response time is under 5000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(5000);
+      });

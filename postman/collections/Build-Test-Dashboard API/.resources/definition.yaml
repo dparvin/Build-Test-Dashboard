@@ -1,0 +1,9 @@
+$kind: collection
+name: Build-Test-Dashboard API
+description: |-
+  REST API collection for the Build-Test-Dashboard application.
+  Covers Repositories, Builds, and Build Connections resources.
+variables:
+  - key: baseUrl
+    value: 'http://localhost:5283'
+    description: Base URL of the running Build-Test-Dashboard API

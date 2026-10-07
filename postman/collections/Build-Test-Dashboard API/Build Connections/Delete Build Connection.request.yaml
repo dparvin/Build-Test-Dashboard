@@ -1,0 +1,19 @@
+$kind: http-request
+method: DELETE
+url: '{{baseUrl}}/api/buildconnections/:id'
+order: 4000
+pathVariables:
+  - key: id
+    value: '1'
+    description: The identifier of the build connection to delete
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 204 or 404", function () {
+          pm.expect(pm.response.code).to.be.oneOf([204, 404]);
+      });
+
+      pm.test("Response time is under 2000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(2000);
+      });
