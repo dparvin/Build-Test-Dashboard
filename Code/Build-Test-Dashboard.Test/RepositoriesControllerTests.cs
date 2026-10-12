@@ -25,10 +25,8 @@ public class RepositoriesControllerTests
     /// <summary>
     /// Initializes a new instance of the <see cref="RepositoriesControllerTests"/> class.
     /// </summary>
-    public RepositoriesControllerTests()
-    {
+    public RepositoriesControllerTests() =>
         factory = new TestWebApplicationFactory();
-    }
 
     /// <summary>
     /// The Get call returns a list of repositories.
@@ -151,6 +149,27 @@ public class RepositoriesControllerTests
     }
 
     /// <summary>
+    /// Deletes the repository through the API call.
+    /// </summary>
+    /// <param name="repositoryId">The repository ID to delete.</param>
+    /// <param name="expectedStatusCode">The expected HTTP status code.</param>
+    [Theory]
+    [InlineData(3, HttpStatusCode.NotFound)]
+    [InlineData(2, HttpStatusCode.NoContent)]
+    public async Task Delete_APICall(
+        int repositoryId,
+        HttpStatusCode expectedStatusCode)
+    {
+        var client = factory.CreateClient();
+        factory.RepositoryServiceState.UseRealService = false;
+        factory.RepositoryServiceState.RepositoryList = ((FakeRepositoryStore)AllRepositories).AllStoredRepositories;
+
+        var response = await client.DeleteAsync($"/api/repositories/{repositoryId}", TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedStatusCode, response.StatusCode);
+    }
+
+    /// <summary>
     /// Posts the API call creates repository.
     /// </summary>
     [Theory()]
@@ -269,6 +288,11 @@ public class RepositoriesControllerTests
         Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
     }
 
+    /// <summary>
+    /// Posts the API call creates repository owner connection.
+    /// </summary>
+    /// <param name="statusCode">The status code.</param>
+    /// <param name="expectedStatusCode">The expected status code.</param>
     [Theory()]
     [InlineData(HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized)]
     [InlineData(HttpStatusCode.NotFound, HttpStatusCode.NotFound)]
@@ -408,59 +432,59 @@ public class RepositoriesControllerTests
         Builds =
         [
             new Build
-        {
-            Id = 1,
-            SourceRepositoryId = 1,
-            BuildNumber = "100",
-            Branch = "main",
-            Commit = "abc123",
-            Status = "Succeeded",
-            TestRuns =
-            [
-                new TestRun
-                {
-                    Id = 1,
-                    BuildId = 1,
-                    Total = 100,
-                    Passed = 98,
-                    Failed = 1,
-                    Skipped = 1,
-                    Duration = TimeSpan.FromSeconds(42)
-                }
-            ]
-        },
-        new Build
-        {
-            Id = 2,
-            SourceRepositoryId = 1,
-            BuildNumber = "101",
-            Branch = "main",
-            Commit = "def456",
-            Status = "Succeeded",
-            TestRuns =
-            [
-                new TestRun
-                {
-                    Id = 2,
-                    BuildId = 2,
-                    Total = 150,
-                    Passed = 150,
-                    Failed = 0,
-                    Skipped = 0,
-                    Duration = TimeSpan.FromSeconds(55)
-                },
-                new TestRun
-                {
-                    Id = 3,
-                    BuildId = 2,
-                    Total = 25,
-                    Passed = 24,
-                    Failed = 1,
-                    Skipped = 0,
-                    Duration = TimeSpan.FromSeconds(8)
-                }
-            ]
-        }
+            {
+                Id = 1,
+                SourceRepositoryId = 1,
+                BuildNumber = "100",
+                Branch = "main",
+                Commit = "abc123",
+                Status = "Succeeded",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 1,
+                        BuildId = 1,
+                        Total = 100,
+                        Passed = 98,
+                        Failed = 1,
+                        Skipped = 1,
+                        Duration = TimeSpan.FromSeconds(42)
+                    }
+                ]
+            },
+            new Build
+            {
+                Id = 2,
+                SourceRepositoryId = 1,
+                BuildNumber = "101",
+                Branch = "main",
+                Commit = "def456",
+                Status = "Succeeded",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 2,
+                        BuildId = 2,
+                        Total = 150,
+                        Passed = 150,
+                        Failed = 0,
+                        Skipped = 0,
+                        Duration = TimeSpan.FromSeconds(55)
+                    },
+                    new TestRun
+                    {
+                        Id = 3,
+                        BuildId = 2,
+                        Total = 25,
+                        Passed = 24,
+                        Failed = 1,
+                        Skipped = 0,
+                        Duration = TimeSpan.FromSeconds(8)
+                    }
+                ]
+            }
         ]
     };
 

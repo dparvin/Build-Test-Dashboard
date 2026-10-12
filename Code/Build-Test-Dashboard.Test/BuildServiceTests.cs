@@ -1,5 +1,4 @@
 ﻿using Build_Test_Dashboard.Models;
-using Build_Test_Dashboard.Requests;
 using Build_Test_Dashboard.Services;
 using Build_Test_Dashboard.Test.Support;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,45 +23,285 @@ public class BuildServiceTests
         factory = new TestWebApplicationFactory();
     }
 
+    /// <summary>
+    /// Saves the build asynchronously.
+    /// </summary>
     [Fact]
     public async Task SaveAsync()
     {
         factory.BuildStore.FindResult = null;
 
-        factory.CredentialStore.StoreException =
-            new InvalidOperationException("Credential store failed.");
 
-        var request = new CreateRepositoryRequest
+        var request = new Build
         {
-            Repository = new Repository
-            {
-                Name = "Test Repository",
-                Provider = "GitHub",
-                Owner = "TestOwner",
-                Project = "TestProject",
-                RepositoryName = "TestRepository"
-            },
-            Credential = new RepositoryCredential
-            {
-                AuthenticationType = "PersonalAccessToken",
-                Secret = "test-secret"
-            }
+            BuildConnectionId = 1,
+            SourceRepositoryId = 1,
+            SourceProvider = "GitHub",
+            SourceOwner = "dparvin",
+            SourceRepositoryName = "Build-Test-Dashboard",
+            ExternalBuildId = "1",
+            BuildNumber = "100",
+            Branch = "main",
+            Commit = "abc123",
+            Status = "Succeeded",
+            TestRuns =
+            [
+                new TestRun
+                {
+                    Total = 100,
+                    Passed = 98,
+                    Failed = 1,
+                    Skipped = 1,
+                    Duration = TimeSpan.FromSeconds(42)
+                }
+            ]
         };
 
         using var scope = factory.Services.CreateScope();
-        var repositoryService =
-            scope.ServiceProvider.GetRequiredService<RepositoryService>();
+        var buildService =
+            scope.ServiceProvider.GetRequiredService<BuildService>();
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => repositoryService.SaveAsync(
+        var results = buildService.SaveAsync(
                 request,
-                TestContext.Current.CancellationToken));
+                TestContext.Current.CancellationToken);
 
-        Assert.Equal(
-            "Credential store failed.",
-            exception.Message);
+        Assert.Equal(1, results.Id);
 
-        Assert.Equal(1, factory.RepositoryStore.DeleteCallCount);
+        Assert.Equal(1, factory.BuildStore.StoreCallCount);
     }
 
+    /// <summary>
+    /// Saves the build asynchronously.
+    /// </summary>
+    [Fact]
+    public async Task GetAllAsync()
+    {
+        factory.BuildServiceState.UseRealService = true;
+        factory.BuildStore.Builds =
+        [
+            new Build
+            {
+                Id = 1,
+                BuildConnectionId = 1,
+                SourceRepositoryId = 1,
+                SourceProvider = "GitHub",
+                SourceOwner = "dparvin",
+                SourceRepositoryName = "Build-Test-Dashboard",
+                ExternalBuildId = "1",
+                BuildNumber = "100",
+                Branch = "main",
+                Commit = "abc123",
+                Status = "Succeeded",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 1,
+                        BuildId = 1,
+                        Total = 100,
+                        Passed = 98,
+                        Failed = 1,
+                        Skipped = 1,
+                        Duration = TimeSpan.FromSeconds(42)
+                    }
+                ]
+            },
+            new Build
+            {
+                Id = 2,
+                BuildConnectionId = 1,
+                SourceRepositoryId = 1,
+                SourceProvider = "GitHub",
+                SourceOwner = "dparvin",
+                SourceRepositoryName = "Build-Test-Dashboard",
+                ExternalBuildId = "2",
+                BuildNumber = "101",
+                Branch = "main",
+                Commit = "def456",
+                Status = "Failed",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 2,
+                        BuildId = 2,
+                        Total = 100,
+                        Passed = 90,
+                        Failed = 5,
+                        Skipped = 5,
+                        Duration = TimeSpan.FromSeconds(50)
+                    }
+                ]
+            }
+        ];
+
+        using var scope = factory.Services.CreateScope();
+        var buildService =
+            scope.ServiceProvider.GetRequiredService<BuildService>();
+
+        var results = buildService.GetAllAsync(
+                1,
+                TestContext.Current.CancellationToken);
+
+        Assert.Equal(2, results.Id);
+
+        Assert.Equal(1, factory.BuildStore.GetAllCallCount);
+    }
+
+    /// <summary>
+    /// Finds the build asynchronously.
+    /// </summary>
+    [Fact]
+    public async Task FindAsync()
+    {
+        factory.BuildServiceState.UseRealService = true;
+        factory.BuildStore.Builds =
+        [
+            new Build
+            {
+                Id = 1,
+                BuildConnectionId = 1,
+                SourceRepositoryId = 1,
+                SourceProvider = "GitHub",
+                SourceOwner = "dparvin",
+                SourceRepositoryName = "Build-Test-Dashboard",
+                ExternalBuildId = "1",
+                BuildNumber = "100",
+                Branch = "main",
+                Commit = "abc123",
+                Status = "Succeeded",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 1,
+                        BuildId = 1,
+                        Total = 100,
+                        Passed = 98,
+                        Failed = 1,
+                        Skipped = 1,
+                        Duration = TimeSpan.FromSeconds(42)
+                    }
+                ]
+            },
+            new Build
+            {
+                Id = 2,
+                BuildConnectionId = 1,
+                SourceRepositoryId = 1,
+                SourceProvider = "GitHub",
+                SourceOwner = "dparvin",
+                SourceRepositoryName = "Build-Test-Dashboard",
+                ExternalBuildId = "2",
+                BuildNumber = "101",
+                Branch = "main",
+                Commit = "def456",
+                Status = "Failed",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 2,
+                        BuildId = 2,
+                        Total = 100,
+                        Passed = 90,
+                        Failed = 5,
+                        Skipped = 5,
+                        Duration = TimeSpan.FromSeconds(50)
+                    }
+                ]
+            }
+        ];
+
+        using var scope = factory.Services.CreateScope();
+        var buildService =
+            scope.ServiceProvider.GetRequiredService<BuildService>();
+
+        var results = buildService.FindAsync(
+                1,
+                "1",
+                TestContext.Current.CancellationToken);
+
+        Assert.Equal(3, results.Id);
+
+        Assert.Equal(1, factory.BuildStore.FindCallCount);
+    }
+
+    /// <summary>
+    /// Finds the build asynchronously.
+    /// </summary>
+    [Fact]
+    public async Task DeleteAsync()
+    {
+        factory.BuildServiceState.UseRealService = true;
+        factory.BuildStore.Builds =
+        [
+            new Build
+            {
+                Id = 1,
+                BuildConnectionId = 1,
+                SourceRepositoryId = 1,
+                SourceProvider = "GitHub",
+                SourceOwner = "dparvin",
+                SourceRepositoryName = "Build-Test-Dashboard",
+                ExternalBuildId = "1",
+                BuildNumber = "100",
+                Branch = "main",
+                Commit = "abc123",
+                Status = "Succeeded",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 1,
+                        BuildId = 1,
+                        Total = 100,
+                        Passed = 98,
+                        Failed = 1,
+                        Skipped = 1,
+                        Duration = TimeSpan.FromSeconds(42)
+                    }
+                ]
+            },
+            new Build
+            {
+                Id = 2,
+                BuildConnectionId = 1,
+                SourceRepositoryId = 1,
+                SourceProvider = "GitHub",
+                SourceOwner = "dparvin",
+                SourceRepositoryName = "Build-Test-Dashboard",
+                ExternalBuildId = "2",
+                BuildNumber = "101",
+                Branch = "main",
+                Commit = "def456",
+                Status = "Failed",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 2,
+                        BuildId = 2,
+                        Total = 100,
+                        Passed = 90,
+                        Failed = 5,
+                        Skipped = 5,
+                        Duration = TimeSpan.FromSeconds(50)
+                    }
+                ]
+            }
+        ];
+
+        using var scope = factory.Services.CreateScope();
+        var buildService =
+            scope.ServiceProvider.GetRequiredService<BuildService>();
+
+        var results = await buildService.DeleteAsync(
+                1,
+                TestContext.Current.CancellationToken);
+
+        Assert.True(results);
+
+        Assert.Equal(1, factory.BuildStore.DeleteCallCount);
+    }
 }

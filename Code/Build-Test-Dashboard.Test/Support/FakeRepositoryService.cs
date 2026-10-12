@@ -146,23 +146,41 @@ public class FakeRepositoryService(
     /// <summary>
     /// Deletes the repository asynchronously.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="id">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public Task<bool> DeleteAsync(
-        int repositoryId,
+    public async Task<bool> DeleteAsync(
+        int id,
         CancellationToken cancellationToken = default)
     {
         DeleteCallCount++;
 
+        if (State.UseRealService)
+            return await realRepositoryService.DeleteAsync(id, cancellationToken);
+
         if (DeleteException != null)
             throw DeleteException;
 
-        if (StoredRepository?.Id != repositoryId)
-            return Task.FromResult(false);
+        if (StoredRepository is not null)
+        {
+            var deleted = StoredRepository.Id == id;
+            if (deleted)
+                StoredRepository = null;
+            return await Task.FromResult(deleted);
+        }
 
-        StoredRepository = null;
+        if (State.RepositoryList is not null)
+        {
+            var repository = State.RepositoryList
+                    .FirstOrDefault(repository => repository.Id == id);
 
-        return Task.FromResult(true);
+            if (repository is null)
+                return await Task.FromResult(false);
+
+            State.RepositoryList.Remove(repository);
+            return await Task.FromResult(true);
+        }
+
+        return await Task.FromResult(false);
     }
 }

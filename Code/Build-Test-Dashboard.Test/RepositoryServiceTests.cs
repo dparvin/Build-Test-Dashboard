@@ -197,36 +197,14 @@ public class RepositoryServiceTests
     public async Task DeleteAsync_ExistingRepository()
     {
         // Arrange
-        var previousRepository = new Repository
+        var repository = new Repository
         {
             Id = 42,
-            Name = "Original Repository",
+            Name = "Repository",
             Provider = "GitHub",
-            Owner = "OriginalOwner",
-            Project = "OriginalProject",
-            RepositoryName = "OriginalRepository"
-        };
-
-        factory.RepositoryStore.FindResult = previousRepository;
-
-        factory.CredentialStore.StoreException =
-            new InvalidOperationException("Credential store failed.");
-
-        var request = new CreateRepositoryRequest
-        {
-            Repository = new Repository
-            {
-                Name = "Updated Repository",
-                Provider = "GitHub",
-                Owner = "UpdatedOwner",
-                Project = "UpdatedProject",
-                RepositoryName = "UpdatedRepository"
-            },
-            Credential = new RepositoryCredential
-            {
-                AuthenticationType = "PersonalAccessToken",
-                Secret = "test-secret"
-            }
+            Owner = "Owner",
+            Project = "Project",
+            RepositoryName = "Repository"
         };
 
         using var scope = factory.Services.CreateScope();
@@ -234,21 +212,28 @@ public class RepositoryServiceTests
         var repositoryService =
             scope.ServiceProvider.GetRequiredService<RepositoryService>();
 
+        var saveRequest = new CreateRepositoryRequest
+        {
+            Repository = repository,
+            Credential = new RepositoryCredential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        await repositoryService.SaveAsync(
+            saveRequest,
+            TestContext.Current.CancellationToken);
+
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => repositoryService.SaveAsync(
-                request,
-                TestContext.Current.CancellationToken));
+        var result = await repositoryService.DeleteAsync(
+            42,
+            TestContext.Current.CancellationToken);
 
         // Assert
-        Assert.Equal(
-            "Credential store failed.",
-            exception.Message);
-
-        Assert.Equal(42, request.Repository.Id);
-
-        Assert.Equal(
-            previousRepository,
-            factory.RepositoryStore.StoredRepository);
+        Assert.True(result);
+        Assert.Null(factory.RepositoryStore.StoredRepository);
+        Assert.Equal(1, factory.RepositoryStore.DeleteCallCount);
     }
 }

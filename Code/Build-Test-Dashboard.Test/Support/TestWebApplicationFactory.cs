@@ -48,6 +48,13 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     /// The build store.
     /// </value>
     public FakeBuildStore BuildStore { get; } = new();
+    /// <summary>
+    /// Gets the build connection store.
+    /// </summary>
+    /// <value>
+    /// The build connection store.
+    /// </value>
+    public FakeBuildConnectionStore BuildConnectionStore { get; } = new();
 
     /// <summary>
     /// Gets the credential store.
@@ -64,7 +71,20 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     /// The repository service.
     /// </value>
     public FakeRepositoryServiceState RepositoryServiceState { get; } = new();
+    /// <summary>
+    /// Gets the state of the build service.
+    /// </summary>
+    /// <value>
+    /// The state of the build service.
+    /// </value>
     public FakeBuildServiceState BuildServiceState { get; } = new();
+    /// <summary>
+    /// Gets the state of the build connection service.
+    /// </summary>
+    /// <value>
+    /// The state of the build connection service.
+    /// </value>
+    public FakeBuildConnectionServiceState BuildConnectionServiceState { get; } = new();
 
     /// <summary>
     /// Gives a fixture an opportunity to configure the application before it gets built.
@@ -82,14 +102,19 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<IRepositoryService>();
             services.RemoveAll<IBuildService>();
             services.RemoveAll<IBuildStore>();
+            services.RemoveAll<IBuildConnectionService>();
+            services.RemoveAll<IBuildConnectionStore>();
 
             services.AddSingleton(RepositoryServiceState);
             services.AddSingleton(BuildServiceState);
+            services.AddSingleton(BuildConnectionServiceState);
 
             services.AddScoped<BuildService>();
+            services.AddScoped<BuildConnectionService>();
             services.AddScoped<RepositoryService>();
             services.AddScoped<FakeBuildService>();
             services.AddScoped<FakeRepositoryService>();
+            services.AddScoped<FakeBuildConnectionService>();
 
             services.AddScoped<IRepositoryStore>(
                 _ => RepositoryStore);
@@ -97,10 +122,14 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
                 _ => CredentialStore);
             services.AddScoped<IBuildStore>(
                 _ => BuildStore);
+            services.AddScoped<IBuildConnectionStore>(
+                _ => BuildConnectionStore);
             services.AddScoped<IRepositoryService>(
                 provider => provider.GetRequiredService<FakeRepositoryService>());
             services.AddScoped<IBuildService>(
                 provider => provider.GetRequiredService<FakeBuildService>());
+            services.AddScoped<IBuildConnectionService>(
+                provider => provider.GetRequiredService<FakeBuildConnectionService>());
 
             services.AddHttpClient<GitHubRepositoryProvider>(client =>
             {

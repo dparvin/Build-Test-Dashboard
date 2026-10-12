@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Build_Test_Dashboard.Migrations.SQLite
+namespace Build_Test_Dashboard.Migrations.SqlServer
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -15,11 +15,11 @@ namespace Build_Test_Dashboard.Migrations.SQLite
                 name: "BuildConnections",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Provider = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Configuration = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Provider = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, collation: "SQL_Latin1_General_CP1_CI_AS"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false, collation: "SQL_Latin1_General_CP1_CI_AS"),
+                    Configuration = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,13 +30,13 @@ namespace Build_Test_Dashboard.Migrations.SQLite
                 name: "Repositories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Provider = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    Owner = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    Project = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    RepositoryName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Provider = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Owner = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Project = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    RepositoryName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -47,21 +47,21 @@ namespace Build_Test_Dashboard.Migrations.SQLite
                 name: "Builds",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    BuildConnectionId = table.Column<int>(type: "INTEGER", nullable: false),
-                    SourceRepositoryId = table.Column<int>(type: "INTEGER", nullable: true),
-                    SourceProvider = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
-                    SourceOwner = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    SourceProject = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    SourceRepositoryName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    ExternalBuildId = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    BuildNumber = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Branch = table.Column<string>(type: "TEXT", maxLength: 500, nullable: false),
-                    Commit = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Started = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Completed = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    Status = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BuildConnectionId = table.Column<int>(type: "int", nullable: false),
+                    SourceRepositoryId = table.Column<int>(type: "int", nullable: true),
+                    SourceProvider = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    SourceOwner = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    SourceProject = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    SourceRepositoryName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    ExternalBuildId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    BuildNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Branch = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    Commit = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Started = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Completed = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -83,14 +83,14 @@ namespace Build_Test_Dashboard.Migrations.SQLite
                 name: "TestRuns",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    BuildId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Total = table.Column<int>(type: "INTEGER", nullable: false),
-                    Passed = table.Column<int>(type: "INTEGER", nullable: false),
-                    Failed = table.Column<int>(type: "INTEGER", nullable: false),
-                    Skipped = table.Column<int>(type: "INTEGER", nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "TEXT", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BuildId = table.Column<int>(type: "int", nullable: false),
+                    Total = table.Column<int>(type: "int", nullable: false),
+                    Passed = table.Column<int>(type: "int", nullable: false),
+                    Failed = table.Column<int>(type: "int", nullable: false),
+                    Skipped = table.Column<int>(type: "int", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false)
                 },
                 constraints: table =>
                 {

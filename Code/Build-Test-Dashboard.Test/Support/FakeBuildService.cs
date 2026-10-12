@@ -84,35 +84,6 @@ public class FakeBuildService(
     }
 
     /// <summary>
-    /// Deletes the build asynchronously.
-    /// </summary>
-    /// <param name="buildId">The build identifier.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns>
-    /// <c>true</c> when the build existed and was deleted; otherwise <c>false</c>.
-    /// </returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public async Task<bool> DeleteAsync(
-        int buildId,
-        CancellationToken cancellationToken = default)
-    {
-        DeleteCallCount++;
-
-        if (State.UseRealService)
-            await realBuildService.DeleteAsync(buildId, cancellationToken);
-
-        if (DeleteException != null)
-            throw DeleteException;
-
-        if (StoredBuild?.Id != buildId)
-            return await Task.FromResult(false);
-
-        StoredBuild = null;
-
-        return await Task.FromResult(true);
-    }
-
-    /// <summary>
     /// Finds the build asynchronously.
     /// </summary>
     /// <param name="repositoryId">The repository identifier.</param>
@@ -203,5 +174,34 @@ public class FakeBuildService(
         list = State.BuildList ?? [];
 
         return Task.FromResult(list.FirstOrDefault(repository => repository.Id == id));
+    }
+
+    /// <summary>
+    /// Deletes the build asynchronously.
+    /// </summary>
+    /// <param name="id">The build identifier.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>
+    /// <c>true</c> when the build existed and was deleted; otherwise <c>false</c>.
+    /// </returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<bool> DeleteAsync(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        DeleteCallCount++;
+
+        if (State.UseRealService)
+            return await realBuildService.DeleteAsync(id, cancellationToken);
+
+        if (DeleteException != null)
+            throw DeleteException;
+
+        if (StoredBuild?.Id != id)
+            return await Task.FromResult(false);
+
+        StoredBuild = null;
+
+        return await Task.FromResult(true);
     }
 }

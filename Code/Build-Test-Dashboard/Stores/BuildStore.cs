@@ -105,17 +105,17 @@ public class BuildStore(DashboardDbContext context) : IBuildStore
     /// <summary>
     /// Deletes the build asynchronously.
     /// </summary>
-    /// <param name="buildId">The build identifier.</param>
+    /// <param name="id">The build identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     ///   <c>true</c> when the build existed and was deleted; otherwise <c>false</c>.
     /// </returns>
     public async Task<bool> DeleteAsync(
-        int buildId,
+        int id,
         CancellationToken cancellationToken = default)
     {
         var build = await GetAsync(
-            buildId,
+            id,
             cancellationToken);
 
         if (build is null)

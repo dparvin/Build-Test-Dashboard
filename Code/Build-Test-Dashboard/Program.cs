@@ -18,23 +18,23 @@ builder.Services.AddDbContext<DashboardDbContext>(options =>
     switch (provider)
     {
         case DatabaseProvider.Sqlite:
-            //options.UseSqlite(connectionString,
-            //        sqliteOptions =>
-            //        {
-            //            sqliteOptions.MigrationsAssembly(
-            //                typeof(Build_Test_Dashboard.Migrations.SQLite.InitialCreate).Assembly.FullName);
-            //        });
-            options.UseSqlite(connectionString);
+            options.UseSqlite(connectionString,
+                    sqliteOptions =>
+                    {
+                        sqliteOptions.MigrationsAssembly(
+                            typeof(Build_Test_Dashboard.Migrations.SQLite.InitialCreate).Assembly.FullName);
+                    });
+            //options.UseSqlite(connectionString);
             break;
 
         case DatabaseProvider.SqlServer:
-            //options.UseSqlServer(connectionString,
-            //        sqlServerOptions =>
-            //        {
-            //            sqlServerOptions.MigrationsAssembly(
-            //                typeof(Build_Test_Dashboard.Migrations.SqlServer.InitialCreate).Assembly.FullName);
-            //        });
-            options.UseSqlServer(connectionString);
+            options.UseSqlServer(connectionString,
+                    sqlServerOptions =>
+                    {
+                        sqlServerOptions.MigrationsAssembly(
+                            typeof(Build_Test_Dashboard.Migrations.SqlServer.InitialCreate).Assembly.FullName);
+                    });
+            //options.UseSqlServer(connectionString);
             break;
 
         default:
@@ -67,6 +67,9 @@ builder.Services.AddScoped<ICredentialStore, WindowsCredentialStore>();
 builder.Services.AddScoped<IBuildStore, BuildStore>();
 builder.Services.AddScoped<IBuildService, BuildService>();
 
+builder.Services.AddScoped<IBuildConnectionStore, BuildConnectionStore>();
+builder.Services.AddScoped<IBuildConnectionService, BuildConnectionService>();
+
 builder.Services.AddScoped<IRepositoryService, RepositoryService>();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -85,4 +88,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

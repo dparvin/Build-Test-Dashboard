@@ -30,5 +30,5 @@ public class FakeRepositoryServiceState
     /// <value>
     /// The repository list.
     /// </value>
-    public IEnumerable<Repository>? RepositoryList { get; set; } = null;
+    public List<Repository>? RepositoryList { get; set; } = null;
 }

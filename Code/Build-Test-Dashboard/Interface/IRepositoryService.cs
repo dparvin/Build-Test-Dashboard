@@ -21,11 +21,11 @@ public interface IRepositoryService
     /// <summary>
     /// Gets the repository asynchronous.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="id">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     Task<Repository?> GetAsync(
-        int repositoryId,
+        int id,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -51,10 +51,10 @@ public interface IRepositoryService
     /// <summary>
     /// Deletes the repository asynchronously.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="id">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     Task<bool> DeleteAsync(
-        int repositoryId,
+        int id,
         CancellationToken cancellationToken = default);
 }

@@ -47,7 +47,7 @@ public class FakeRepositoryStore : IRepositoryStore
     /// <value>
     /// All stored repositories.
     /// </value>
-    public IEnumerable<Repository>? AllStoredRepositories { get; set; } = null;
+    public List<Repository>? AllStoredRepositories { get; set; } = null;
 
     /// <summary>
     /// Gets the find call count.
@@ -96,9 +96,8 @@ public class FakeRepositoryStore : IRepositoryStore
     public Task<IEnumerable<Repository>> GetAllAsync(
         CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(
-            AllStoredRepositories ??
-            []);
+        return Task.FromResult<IEnumerable<Repository>>(
+            AllStoredRepositories ?? []);
     }
 
     /// <summary>
@@ -169,11 +168,26 @@ public class FakeRepositoryStore : IRepositoryStore
         if (DeleteException != null)
             throw DeleteException;
 
-        if (StoredRepository?.Id != repositoryId)
-            return Task.FromResult(false);
+        if (StoredRepository is not null)
+        {
+            var deleted = StoredRepository.Id == repositoryId;
+            if (deleted)
+                StoredRepository = null;
+            return Task.FromResult(deleted);
+        }
 
-        StoredRepository = null;
+        if (AllStoredRepositories is not null)
+        {
+            var repository = AllStoredRepositories
+                    .FirstOrDefault(repository => repository.Id == repositoryId);
 
-        return Task.FromResult(true);
+            if (repository is null)
+                return Task.FromResult(false);
+
+            AllStoredRepositories.Remove(repository);
+            return Task.FromResult(true);
+        }
+
+        return Task.FromResult(false);
     }
 }

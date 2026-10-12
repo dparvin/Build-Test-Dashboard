@@ -22,13 +22,13 @@ public interface IBuildStore
     /// <summary>
     /// Gets a build asynchronously.
     /// </summary>
-    /// <param name="buildId">The build identifier.</param>
+    /// <param name="id">The build identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     ///   <c>null</c> if the build is not found, or the build record if it is found.
     /// </returns>
     Task<Build?> GetAsync(
-        int buildId,
+        int id,
         CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -70,12 +70,12 @@ public interface IBuildStore
     /// <summary>
     /// Deletes the build asynchronously.
     /// </summary>
-    /// <param name="buildId">The build identifier.</param>
+    /// <param name="id">The build identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     ///   <c>true</c> when the build existed and was deleted; otherwise <c>false</c>.
     /// </returns>
     Task<bool> DeleteAsync(
-        int buildId,
+        int id,
         CancellationToken cancellationToken = default);
 }

@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0028:Simplify collection initialization", Justification = "<Pending>", Scope = "member", Target = "~M:Build_Test_Dashboard.Test.ProgramTests.CreateWebApplication(System.String)~Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactory{Program}")]
+[assembly: SuppressMessage("Style", "IDE0031:Use null propagation", Justification = "<Pending>", Scope = "member", Target = "~M:Build_Test_Dashboard.Test.Support.FakeBuildConnectionService.SaveAsync(Build_Test_Dashboard.Models.BuildConnection,System.Threading.CancellationToken)~System.Threading.Tasks.Task{Build_Test_Dashboard.Models.BuildConnection}")]

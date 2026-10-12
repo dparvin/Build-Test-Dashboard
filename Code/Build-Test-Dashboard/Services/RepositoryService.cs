@@ -157,14 +157,14 @@ public class RepositoryService(
     /// <summary>
     /// Deletes the repository asynchronously.
     /// </summary>
-    /// <param name="repositoryId">The repository identifier.</param>
+    /// <param name="id">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
     public async Task<bool> DeleteAsync(
-        int repositoryId,
+        int id,
         CancellationToken cancellationToken = default) =>
         await repositoryStore.DeleteAsync(
-            repositoryId,
+            id,
             cancellationToken);
 }

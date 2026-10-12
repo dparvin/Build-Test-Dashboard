@@ -46,17 +46,17 @@ public class BuildConnectionService(
     /// <summary>
     /// Gets a <see cref="BuildConnection" /> asynchronously.
     /// </summary>
-    /// <param name="buildConnectionId">The build connection identifier.</param>
+    /// <param name="id">The build connection identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>
     /// <c>null</c> if the <see cref="BuildConnection" /> is not found, or the
     /// <see cref="BuildConnection" /> if it is found.
     /// </returns>
     public Task<BuildConnection?> GetAsync(
-        int buildConnectionId,
+        int id,
         CancellationToken cancellationToken = default) =>
         buildConnectionStore.GetAsync(
-            buildConnectionId,
+            id,
             cancellationToken);
 
     /// <summary>

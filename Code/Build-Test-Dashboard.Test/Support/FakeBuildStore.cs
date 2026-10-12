@@ -68,6 +68,13 @@ namespace Build_Test_Dashboard.Test.Support
         /// The delete call count.
         /// </value>
         public int DeleteCallCount { get; private set; }
+        /// <summary>
+        /// Gets the get all call count.
+        /// </summary>
+        /// <value>
+        /// The get all call count.
+        /// </value>
+        public int GetAllCallCount { get; private set; }
 
         /// <summary>
         /// Stores the build asynchronous.
@@ -135,6 +142,7 @@ namespace Build_Test_Dashboard.Test.Support
             int buildConnectionId,
             CancellationToken cancellationToken = default)
         {
+            GetAllCallCount++;
             return Task.FromResult(
                 Builds ??
                 []);
@@ -191,12 +199,29 @@ namespace Build_Test_Dashboard.Test.Support
             if (DeleteException != null)
                 throw DeleteException;
 
-            if (StoredBuild?.Id != buildId)
+            if (StoredBuild is not null)
+            {
+                if (StoredBuild.Id == buildId)
+                {
+                    StoredBuild = null;
+                    return Task.FromResult(true);
+                }
                 return Task.FromResult(false);
+            }
 
-            StoredBuild = null;
+            if (Builds is not null)
+            {
+                var buildToDelete = Builds.FirstOrDefault(
+                    repository => repository.Id == buildId);
+                if (buildToDelete is not null)
+                {
+                    Builds = Builds.Where(
+                        repository => repository.Id != buildId);
+                    return Task.FromResult(true);
+                }
+            }
 
-            return Task.FromResult(true);
+            return Task.FromResult(false);
         }
     }
 }

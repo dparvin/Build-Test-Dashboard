@@ -88,17 +88,15 @@ public class RepositoryStore(
     /// <param name="repositoryId">The repository identifier.</param>
     /// <returns></returns>
     public async Task<bool> DeleteAsync(
-        int repositoryId,
+        int id,
         CancellationToken cancellationToken)
     {
         // Check if the repository exists
-        var repository = await GetAsync(repositoryId, cancellationToken);
+        var repository = await GetAsync(id, cancellationToken);
 
         // If the repository does not exist, return false
         if (repository is null)
-        {
             return false;
-        }
 
         // Remove the repository from the database
         _context.Repositories.Remove(repository);

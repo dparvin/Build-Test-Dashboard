@@ -287,13 +287,13 @@ public class RepositoryStoreTests
     /// Creates the context.
     /// </summary>
     /// <returns></returns>
-    private static DashboardDbContext CreateContext()
+    private static SqliteDashboardDbContext CreateContext()
     {
-        var options = new DbContextOptionsBuilder<DashboardDbContext>()
+        var options = new DbContextOptionsBuilder<SqliteDashboardDbContext>()
             .UseSqlite("Data Source=:memory:")
             .Options;
 
-        var context = new DashboardDbContext(options);
+        var context = new SqliteDashboardDbContext(options);
 
         context.Database.OpenConnection();
         context.Database.EnsureCreated();
