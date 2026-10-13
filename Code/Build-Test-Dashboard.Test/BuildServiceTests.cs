@@ -228,7 +228,7 @@ public class BuildServiceTests
     }
 
     /// <summary>
-    /// Finds the build asynchronously.
+    /// Deletes the build asynchronously.
     /// </summary>
     [Fact]
     public async Task DeleteAsync()
