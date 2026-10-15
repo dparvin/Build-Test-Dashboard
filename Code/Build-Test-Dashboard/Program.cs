@@ -1,81 +1,25 @@
-using Build_Test_Dashboard.Configuration;
+using Build_Test_Dashboard;
 using Build_Test_Dashboard.Data;
-using Build_Test_Dashboard.Enums;
-using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Providers;
-using Build_Test_Dashboard.Services;
-using Build_Test_Dashboard.Stores;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-var (provider, connectionString) = DatabaseConfiguration.GetDatabaseProvider(builder.Configuration);
-
-builder.Services.AddDbContext<DashboardDbContext>(options =>
-{
-    switch (provider)
-    {
-        case DatabaseProvider.Sqlite:
-            options.UseSqlite(connectionString,
-                    sqliteOptions =>
-                    {
-                        sqliteOptions.MigrationsAssembly(
-                            typeof(Build_Test_Dashboard.Migrations.SQLite.InitialCreate).Assembly.FullName);
-                    });
-            //options.UseSqlite(connectionString);
-            break;
-
-        case DatabaseProvider.SqlServer:
-            options.UseSqlServer(connectionString,
-                    sqlServerOptions =>
-                    {
-                        sqlServerOptions.MigrationsAssembly(
-                            typeof(Build_Test_Dashboard.Migrations.SqlServer.InitialCreate).Assembly.FullName);
-                    });
-            //options.UseSqlServer(connectionString);
-            break;
-
-        default:
-            throw new InvalidOperationException(
-                $"Unsupported database provider: {provider}");
-    }
-});
-
-builder.Services.AddControllers();
-
-builder.Services.AddHttpClient<GitHubRepositoryProvider>(client =>
-{
-    client.BaseAddress = new Uri("https://api.github.com/");
-});
-builder.Services.AddHttpClient<AzureDevOpsRepositoryProvider>(client =>
-{
-    client.BaseAddress = new Uri("https://dev.azure.com/");
-});
-
-builder.Services.AddScoped<IRepositoryProvider>(
-    provider => provider.GetRequiredService<GitHubRepositoryProvider>());
-
-builder.Services.AddScoped<IRepositoryProvider>(
-    provider => provider.GetRequiredService<AzureDevOpsRepositoryProvider>());
-
-builder.Services.AddScoped<IWindowsCredentialManager, WindowsCredentialManager>();
-builder.Services.AddScoped<IRepositoryStore, RepositoryStore>();
-builder.Services.AddScoped<ICredentialStore, WindowsCredentialStore>();
-
-builder.Services.AddScoped<IBuildStore, BuildStore>();
-builder.Services.AddScoped<IBuildService, BuildService>();
-
-builder.Services.AddScoped<IBuildConnectionStore, BuildConnectionStore>();
-builder.Services.AddScoped<IBuildConnectionService, BuildConnectionService>();
-
-builder.Services.AddScoped<IRepositoryService, RepositoryService>();
+builder.Services.AddDashboardApiServices(builder.Configuration);
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Apply pending database migrations.
+await using (var scope = app.Services.CreateAsyncScope())
+{
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<DashboardDbContext>();
+
+    await dbContext.Database.MigrateAsync().ConfigureAwait(false);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
