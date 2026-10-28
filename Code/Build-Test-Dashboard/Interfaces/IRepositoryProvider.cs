@@ -1,7 +1,7 @@
-﻿using Build_Test_Dashboard.Enums;
-using Build_Test_Dashboard.Requests;
+﻿using Build_Test_Dashboard.Contracts.Enums;
+using Build_Test_Dashboard.Contracts.Requests;
 
-namespace Build_Test_Dashboard.Interface;
+namespace Build_Test_Dashboard.Interfaces;
 
 /// <summary>
 /// Represents a provider for repository operations in the build and test dashboard.

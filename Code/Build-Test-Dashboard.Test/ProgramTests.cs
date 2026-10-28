@@ -1,6 +1,6 @@
 ﻿using Build_Test_Dashboard.Configuration;
+using Build_Test_Dashboard.Contracts.Enums;
 using Build_Test_Dashboard.Data;
-using Build_Test_Dashboard.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

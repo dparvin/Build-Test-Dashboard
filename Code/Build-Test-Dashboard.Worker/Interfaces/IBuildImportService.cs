@@ -1,4 +1,4 @@
-﻿namespace Build_Test_Dashboard.Interface;
+﻿namespace Build_Test_Dashboard.Worker.Interfaces;
 
 /// <summary>
 /// Imports build and test data from configured build connections.

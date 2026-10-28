@@ -1,6 +1,6 @@
 ﻿using Build_Test_Dashboard.Exceptions;
-using Build_Test_Dashboard.Models;
-using Build_Test_Dashboard.Requests;
+using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Contracts.Requests;
 using Build_Test_Dashboard.Services;
 using Build_Test_Dashboard.Test.Support;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +46,7 @@ public class RepositoryServiceTests
                 Project = "TestProject",
                 RepositoryName = "TestRepository"
             },
-            Credential = new RepositoryCredential
+            Credential = new Credential
             {
                 AuthenticationType = "PersonalAccessToken",
                 Secret = "test-secret"
@@ -101,7 +101,7 @@ public class RepositoryServiceTests
                 Project = "UpdatedProject",
                 RepositoryName = "UpdatedRepository"
             },
-            Credential = new RepositoryCredential
+            Credential = new Credential
             {
                 AuthenticationType = "PersonalAccessToken",
                 Secret = "test-secret"
@@ -155,7 +155,7 @@ public class RepositoryServiceTests
                 Project = "TestProject",
                 RepositoryName = "TestRepository"
             },
-            Credential = new RepositoryCredential
+            Credential = new Credential
             {
                 AuthenticationType = "PersonalAccessToken",
                 Secret = "test-secret"
@@ -215,7 +215,7 @@ public class RepositoryServiceTests
         var saveRequest = new CreateRepositoryRequest
         {
             Repository = repository,
-            Credential = new RepositoryCredential
+            Credential = new Credential
             {
                 AuthenticationType = "PersonalAccessToken",
                 Secret = "test-secret"

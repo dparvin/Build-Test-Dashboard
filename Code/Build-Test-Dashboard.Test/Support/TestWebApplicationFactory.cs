@@ -1,6 +1,6 @@
 ﻿// Ignore Spelling: Dev
 
-using Build_Test_Dashboard.Interface;
+using Build_Test_Dashboard.Interfaces;
 using Build_Test_Dashboard.Providers;
 using Build_Test_Dashboard.Services;
 using Microsoft.AspNetCore.Hosting;

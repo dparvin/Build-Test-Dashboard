@@ -1,4 +1,4 @@
-﻿using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
 
 namespace Build_Test_Dashboard.Test.Support;
 

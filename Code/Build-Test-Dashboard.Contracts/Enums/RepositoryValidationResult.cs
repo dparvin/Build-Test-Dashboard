@@ -1,4 +1,4 @@
-﻿namespace Build_Test_Dashboard.Enums;
+﻿namespace Build_Test_Dashboard.Contracts.Enums;
 
 /// <summary>
 /// Represents the result of validating a repository in the build and test dashboard.

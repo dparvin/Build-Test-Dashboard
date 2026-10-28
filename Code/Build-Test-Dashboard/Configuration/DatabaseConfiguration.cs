@@ -1,10 +1,11 @@
-﻿using Build_Test_Dashboard.Enums;
+﻿using Build_Test_Dashboard.Contracts.Enums;
 
 namespace Build_Test_Dashboard.Configuration
 {
     public static class DatabaseConfiguration
     {
-        public static (DatabaseProvider, string?) GetDatabaseProvider(IConfiguration configuration)
+        public static (DatabaseProvider, string?) GetDatabaseProvider(
+            IConfiguration configuration)
         {
             var database = configuration.GetSection("Database");
 

@@ -1,12 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Build_Test_Dashboard.Models;
+namespace Build_Test_Dashboard.Contracts.Models;
 
 /// <summary>
 /// Represents a build in the build and test dashboard.
 /// </summary>
-[Index(nameof(BuildConnectionId), nameof(ExternalBuildId), IsUnique = true)]
 public class Build
 {
     /// <summary>

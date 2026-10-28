@@ -1,4 +1,4 @@
-﻿using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Stores;
 
 namespace Build_Test_Dashboard.Test;
@@ -10,7 +10,7 @@ public class KeyVaultCredentialStoreTests
     {
         // Arrange
         var credentialStore = new KeyVaultCredentialStore();
-        var credential = new RepositoryCredential();
+        var credential = new Credential();
         // Act
         var exception = await Assert.ThrowsAsync<NotImplementedException>(() => credentialStore.StoreAsync(credential, TestContext.Current.CancellationToken));
         // Assert

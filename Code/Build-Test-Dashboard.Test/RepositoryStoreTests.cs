@@ -1,5 +1,5 @@
 ﻿using Build_Test_Dashboard.Data;
-using Build_Test_Dashboard.Models;
+using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Stores;
 using Microsoft.EntityFrameworkCore;
 

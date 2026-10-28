@@ -1,5 +1,5 @@
-﻿using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Interfaces;
+using Build_Test_Dashboard.Contracts.Models;
 
 namespace Build_Test_Dashboard.Stores;
 
@@ -11,8 +11,9 @@ public class WindowsCredentialStore : ICredentialStore
     /// <param name="credential">The credential.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    /// <exception cref="System.NotImplementedException"></exception>
-    public Task StoreAsync(RepositoryCredential credential, CancellationToken cancellationToken = default)
+    public Task StoreAsync(
+        Credential credential,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
@@ -23,8 +24,9 @@ public class WindowsCredentialStore : ICredentialStore
     /// <param name="repositoryId">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    /// <exception cref="System.NotImplementedException"></exception>
-    public Task<RepositoryCredential?> GetAsync(int repositoryId, CancellationToken cancellationToken = default)
+    public Task<Credential?> GetAsync(
+        int repositoryId,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
@@ -35,8 +37,9 @@ public class WindowsCredentialStore : ICredentialStore
     /// <param name="repositoryId">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    /// <exception cref="System.NotImplementedException"></exception>
-    public Task DeleteAsync(int repositoryId, CancellationToken cancellationToken = default)
+    public Task DeleteAsync(
+        int repositoryId,
+        CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }

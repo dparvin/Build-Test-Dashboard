@@ -1,7 +1,7 @@
 ﻿using Build_Test_Dashboard.Configuration;
+using Build_Test_Dashboard.Contracts.Enums;
 using Build_Test_Dashboard.Data;
-using Build_Test_Dashboard.Enums;
-using Build_Test_Dashboard.Interface;
+using Build_Test_Dashboard.Interfaces;
 using Build_Test_Dashboard.Providers;
 using Build_Test_Dashboard.Services;
 using Build_Test_Dashboard.Stores;
@@ -26,7 +26,7 @@ public static class DependencyInjection
                         sqliteOptions =>
                         {
                             sqliteOptions.MigrationsAssembly(
-                                typeof(Build_Test_Dashboard.Migrations.SQLite.InitialCreate).Assembly.FullName);
+                                typeof(Migrations.SQLite.InitialCreate).Assembly.FullName);
                         });
                     //options.UseSqlite(connectionString);
                 });
@@ -41,7 +41,7 @@ public static class DependencyInjection
                         sqlServerOptions =>
                         {
                             sqlServerOptions.MigrationsAssembly(
-                                typeof(Build_Test_Dashboard.Migrations.SqlServer.InitialCreate).Assembly.FullName);
+                                typeof(Migrations.SqlServer.InitialCreate).Assembly.FullName);
                         });
                     //options.UseSqlServer(connectionString);
                 });

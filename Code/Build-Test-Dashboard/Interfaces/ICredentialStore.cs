@@ -1,6 +1,6 @@
-﻿using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
 
-namespace Build_Test_Dashboard.Interface;
+namespace Build_Test_Dashboard.Interfaces;
 
 /// <summary>
 /// Represents a store for managing credentials in the build and test dashboard.
@@ -13,14 +13,14 @@ public interface ICredentialStore
     /// <param name="credential">The credential.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    Task StoreAsync(RepositoryCredential credential, CancellationToken cancellationToken = default);
+    Task StoreAsync(Credential credential, CancellationToken cancellationToken = default);
     /// <summary>
     /// Gets the credential asynchronously.
     /// </summary>
     /// <param name="repositoryId">The repository identifier.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    Task<RepositoryCredential?> GetAsync(int repositoryId, CancellationToken cancellationToken = default);
+    Task<Credential?> GetAsync(int repositoryId, CancellationToken cancellationToken = default);
     /// <summary>
     /// Deletes the credential asynchronously.
     /// </summary>

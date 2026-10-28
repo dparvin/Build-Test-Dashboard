@@ -1,9 +1,9 @@
-﻿using Build_Test_Dashboard.Enums;
+﻿using Build_Test_Dashboard.Contracts.Enums;
+using Build_Test_Dashboard.Interfaces;
+using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Contracts.Requests;
+using Build_Test_Dashboard.Contracts.Results;
 using Build_Test_Dashboard.Exceptions;
-using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
-using Build_Test_Dashboard.Requests;
-using Build_Test_Dashboard.Results;
 
 namespace Build_Test_Dashboard.Services;
 
@@ -91,7 +91,7 @@ public class RepositoryService(
             await repositoryStore.StoreAsync(
                 request.Repository,
                 cancellationToken);
-        request.Credential.RepositoryId = repository.Id;
+        request.Credential.Id = repository.Id;
 
         // Save the credentials for the repository
         try

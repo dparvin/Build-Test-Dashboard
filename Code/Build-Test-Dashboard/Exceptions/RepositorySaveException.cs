@@ -10,7 +10,7 @@
 /// <remarks>
 /// Initializes a new instance of the <see cref="RepositorySaveException"/> class.
 /// </remarks>
-/// <seealso cref="System.Exception" />
+/// <seealso cref="Exception" />
 public class RepositorySaveException(
     string message,
     Exception innerException,

@@ -1,6 +1,6 @@
-﻿using Build_Test_Dashboard.Enums;
-using Build_Test_Dashboard.Models;
-using Build_Test_Dashboard.Requests;
+﻿using Build_Test_Dashboard.Contracts.Enums;
+using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Contracts.Requests;
 using Build_Test_Dashboard.Services;
 using Build_Test_Dashboard.Test.Support;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,7 +44,7 @@ public class GitHubRepositoryProviderTests
                 Project = "TestProject",
                 RepositoryName = "TestRepository"
             },
-            Credential = new RepositoryCredential
+            Credential = new Credential
             {
                 AuthenticationType = "PersonalAccessToken",
                 Secret = "test-secret"

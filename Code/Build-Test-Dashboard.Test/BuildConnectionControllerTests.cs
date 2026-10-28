@@ -1,6 +1,6 @@
-﻿using Build_Test_Dashboard.Controllers;
-using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Controllers;
+using Build_Test_Dashboard.Interfaces;
 using Build_Test_Dashboard.Services;
 using Build_Test_Dashboard.Test.Support;
 using Microsoft.AspNetCore.Mvc;

@@ -1,11 +1,11 @@
-﻿using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Interfaces;
+using Build_Test_Dashboard.Contracts.Models;
 
 namespace Build_Test_Dashboard.Test.Support;
 
 public class FakeCredentialStore : ICredentialStore
 {
-    public RepositoryCredential? StoredCredential { get; set; }
+    public Credential? StoredCredential { get; set; }
 
     public int StoreCallCount { get; private set; }
 
@@ -24,7 +24,7 @@ public class FakeCredentialStore : ICredentialStore
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     public Task StoreAsync(
-        RepositoryCredential credential,
+        Credential credential,
         CancellationToken cancellationToken = default)
     {
         StoreCallCount++;
@@ -43,7 +43,7 @@ public class FakeCredentialStore : ICredentialStore
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public Task<RepositoryCredential?> GetAsync(
+    public Task<Credential?> GetAsync(
         int repositoryId,
         CancellationToken cancellationToken = default)
     {

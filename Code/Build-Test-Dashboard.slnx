@@ -1,8 +1,11 @@
 <Solution>
+  <Project Path="Build-Test-Dashboard.Contracts/Build-Test-Dashboard.Contracts.csproj" Id="effa40e0-2a3d-4ca9-b9c8-caa57f7d81a4" />
   <Project Path="Build-Test-Dashboard.Test/Build-Test-Dashboard.Test.csproj" Id="bdf987d3-9a17-4339-971f-9e1c4879b470">
+    <BuildDependency Project="Build-Test-Dashboard.Contracts/Build-Test-Dashboard.Contracts.csproj" />
     <BuildDependency Project="Build-Test-Dashboard.Worker.Test/Build-Test-Dashboard.Worker.Test.csproj" />
   </Project>
   <Project Path="Build-Test-Dashboard.Worker.Test/Build-Test-Dashboard.Worker.Test.csproj" Id="b851be38-7bf1-40e3-abc6-0dfcea70bc92">
+    <BuildDependency Project="Build-Test-Dashboard.Contracts/Build-Test-Dashboard.Contracts.csproj" />
     <BuildDependency Project="Build-Test-Dashboard/Build-Test-Dashboard.csproj" />
   </Project>
   <Project Path="Build-Test-Dashboard.Worker/Build-Test-Dashboard.Worker.csproj" Id="92eb0f46-2e99-44e2-8939-3387d0244418" />

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Build_Test_Dashboard.Models;
+namespace Build_Test_Dashboard.Contracts.Models;
 
 /// <summary>
 /// Represents a repository in the build and test dashboard.

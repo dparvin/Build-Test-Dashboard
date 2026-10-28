@@ -1,12 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Build_Test_Dashboard.Models;
+namespace Build_Test_Dashboard.Contracts.Models;
 
 /// <summary>
 /// Represents a connection to a build provider in the build and test dashboard.
 /// </summary>
-[Index(nameof(Provider), nameof(Name), IsUnique = true)]
 public class BuildConnection
 {
     /// <summary>

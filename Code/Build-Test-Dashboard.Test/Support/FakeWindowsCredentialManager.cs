@@ -1,4 +1,4 @@
-﻿using Build_Test_Dashboard.Interface;
+﻿using Build_Test_Dashboard.Interfaces;
 
 namespace Build_Test_Dashboard.Test.Support;
 

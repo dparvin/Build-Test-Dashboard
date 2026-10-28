@@ -1,7 +1,7 @@
-﻿using Build_Test_Dashboard.Enums;
-using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
-using Build_Test_Dashboard.Requests;
+﻿using Build_Test_Dashboard.Contracts.Enums;
+using Build_Test_Dashboard.Interfaces;
+using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Contracts.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Build_Test_Dashboard.Controllers;

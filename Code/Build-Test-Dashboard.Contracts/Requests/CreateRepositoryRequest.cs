@@ -1,6 +1,6 @@
-﻿using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
 
-namespace Build_Test_Dashboard.Requests;
+namespace Build_Test_Dashboard.Contracts.Requests;
 
 /// <summary>
 /// Represents a request to create a repository in the build and test dashboard, including the repository details and associated credentials.
@@ -21,5 +21,5 @@ public class CreateRepositoryRequest
     /// <value>
     /// The repository credential.
     /// </value>
-    public RepositoryCredential Credential { get; set; } = new();
+    public Credential Credential { get; set; } = new();
 }

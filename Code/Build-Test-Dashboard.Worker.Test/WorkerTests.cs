@@ -1,4 +1,4 @@
-﻿using Build_Test_Dashboard.Interface;
+﻿using Build_Test_Dashboard.Worker.Interfaces;
 using Build_Test_Dashboard.Worker.Test.Fakes;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

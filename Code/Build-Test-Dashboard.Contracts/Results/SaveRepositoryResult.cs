@@ -1,7 +1,7 @@
-﻿using Build_Test_Dashboard.Enums;
-using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Contracts.Enums;
 
-namespace Build_Test_Dashboard.Results;
+namespace Build_Test_Dashboard.Contracts.Results;
 
 public class SaveRepositoryResult
 {

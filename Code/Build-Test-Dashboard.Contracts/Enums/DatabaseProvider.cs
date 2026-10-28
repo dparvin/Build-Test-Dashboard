@@ -1,4 +1,4 @@
-﻿namespace Build_Test_Dashboard.Enums;
+﻿namespace Build_Test_Dashboard.Contracts.Enums;
 
 /// <summary>
 /// Represents the database provider options for the build and test dashboard.

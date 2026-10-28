@@ -1,4 +1,4 @@
-﻿using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Stores;
 
 namespace Build_Test_Dashboard.Test;
@@ -10,7 +10,7 @@ public class WindowsCredentialManagerTests
     {
         // Arrange
         var credentialManager = new WindowsCredentialManager();
-        var credential = new RepositoryCredential();
+        var credential = new Credential();
         // Act
         var exception = Assert.Throws<NotImplementedException>(() => credentialManager.Write("target", "Someone", credential.Secret));
         // Assert

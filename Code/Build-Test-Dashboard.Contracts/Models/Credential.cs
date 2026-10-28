@@ -1,9 +1,9 @@
-﻿namespace Build_Test_Dashboard.Models;
+﻿namespace Build_Test_Dashboard.Contracts.Models;
 
 /// <summary>
-/// Represents credentials used to access a repository in the build and test dashboard.
+/// Represents credentials used to access an external service.
 /// </summary>
-public class RepositoryCredential
+public class Credential
 {
     /// <summary>
     /// Gets or sets the identifier.
@@ -11,7 +11,14 @@ public class RepositoryCredential
     /// <value>
     /// The identifier.
     /// </value>
-    public int RepositoryId { get; set; }
+    public int Id { get; set; }
+    /// <summary>
+    /// Gets or sets the name.
+    /// </summary>
+    /// <value>
+    /// The name.
+    /// </value>
+    public string Name { get; set; } = string.Empty;
     /// <summary>
     /// Gets or sets the authentication type.
     /// </summary>

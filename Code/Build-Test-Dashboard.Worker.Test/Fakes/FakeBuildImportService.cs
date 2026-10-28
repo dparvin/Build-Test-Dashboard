@@ -1,4 +1,4 @@
-﻿using Build_Test_Dashboard.Interface;
+﻿using Build_Test_Dashboard.Worker.Interfaces;
 
 namespace Build_Test_Dashboard.Worker.Test.Fakes;
 

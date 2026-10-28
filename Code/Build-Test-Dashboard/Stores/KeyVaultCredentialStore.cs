@@ -1,5 +1,5 @@
-﻿using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Interfaces;
 
 namespace Build_Test_Dashboard.Stores
 {
@@ -12,7 +12,7 @@ namespace Build_Test_Dashboard.Stores
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task StoreAsync(RepositoryCredential credential, CancellationToken cancellationToken = default)
+        public Task StoreAsync(Credential credential, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -24,7 +24,7 @@ namespace Build_Test_Dashboard.Stores
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Task<RepositoryCredential?> GetAsync(int repositoryId, CancellationToken cancellationToken = default)
+        public Task<Credential?> GetAsync(int repositoryId, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

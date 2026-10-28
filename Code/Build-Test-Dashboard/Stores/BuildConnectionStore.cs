@@ -1,6 +1,6 @@
 ﻿using Build_Test_Dashboard.Data;
-using Build_Test_Dashboard.Interface;
-using Build_Test_Dashboard.Models;
+using Build_Test_Dashboard.Interfaces;
+using Build_Test_Dashboard.Contracts.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Build_Test_Dashboard.Stores;

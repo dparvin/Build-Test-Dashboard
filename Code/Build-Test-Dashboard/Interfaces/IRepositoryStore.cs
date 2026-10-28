@@ -1,6 +1,6 @@
-﻿using Build_Test_Dashboard.Models;
+﻿using Build_Test_Dashboard.Contracts.Models;
 
-namespace Build_Test_Dashboard.Interface;
+namespace Build_Test_Dashboard.Interfaces;
 
 public interface IRepositoryStore
 {
