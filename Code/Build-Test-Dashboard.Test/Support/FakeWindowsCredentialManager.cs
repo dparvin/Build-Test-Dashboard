@@ -1,11 +1,11 @@
-﻿using Build_Test_Dashboard.Interfaces;
+﻿using Build_Test_Dashboard.API.Interfaces;
 
 namespace Build_Test_Dashboard.Test.Support;
 
 /// <summary>
-/// Represents a fake implementation of the <see cref="IWindowsCredentialManager"/> interface for testing purposes.
+/// Represents a fake implementation of the <see cref="IWindowsCredentialManager" /> interface for testing purposes.
 /// </summary>
-/// <seealso cref="Build_Test_Dashboard.Interface.IWindowsCredentialManager" />
+/// <seealso cref="IWindowsCredentialManager" />
 public class FakeWindowsCredentialManager : IWindowsCredentialManager
 {
     /// <summary>

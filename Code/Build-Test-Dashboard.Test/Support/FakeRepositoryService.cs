@@ -1,12 +1,18 @@
-﻿using Build_Test_Dashboard.Contracts.Enums;
-using Build_Test_Dashboard.Interfaces;
+﻿using Build_Test_Dashboard.API.Interfaces;
+using Build_Test_Dashboard.API.Services;
+using Build_Test_Dashboard.Contracts.Enums;
 using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Contracts.Requests;
 using Build_Test_Dashboard.Contracts.Results;
-using Build_Test_Dashboard.Services;
 
 namespace Build_Test_Dashboard.Test.Support;
 
+/// <summary>
+/// Represents a fake implementation of the <see cref="IRepositoryService"/> interface for testing purposes.
+/// </summary>
+/// <param name="realRepositoryService">The real repository service.</param>
+/// <param name="state">The state of the fake repository service.</param>
+/// <seealso cref="IRepositoryService" />
 public class FakeRepositoryService(
     RepositoryService realRepositoryService,
     FakeRepositoryServiceState state) : IRepositoryService

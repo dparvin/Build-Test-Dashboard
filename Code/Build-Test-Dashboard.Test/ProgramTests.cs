@@ -1,11 +1,15 @@
-﻿using Build_Test_Dashboard.Configuration;
+﻿using Build_Test_Dashboard.API;
+using Build_Test_Dashboard.API.Configuration;
+using Build_Test_Dashboard.API.Data;
 using Build_Test_Dashboard.Contracts.Enums;
-using Build_Test_Dashboard.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Build_Test_Dashboard.Test;
 
+/// <summary>
+/// Represents the test class for the Program class.
+/// </summary>
 public class ProgramTests
 {
     /// <summary>
@@ -72,6 +76,7 @@ public class ProgramTests
     [Fact]
     public void Test_Dependencies_When_Provider_Is_SqlServer()
     {
+
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
@@ -83,7 +88,8 @@ public class ProgramTests
         var services = new ServiceCollection();
         services.AddLogging();
 
-        services.AddDashboardServices(configuration);
+        services.AddDashboardDatabaseServices(configuration);
+        services.AddDashboardServices();
 
         using var serviceProvider = services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
@@ -117,7 +123,7 @@ public class ProgramTests
         services.AddLogging();
 
         var exception = Assert.Throws<InvalidOperationException>(
-            () => services.AddDashboardServices(configuration));
+            () => services.AddDashboardDatabaseServices(configuration));
 
         Assert.Contains("Unsupported database provider", exception.Message);
     }

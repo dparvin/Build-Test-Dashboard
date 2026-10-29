@@ -1,8 +1,12 @@
-﻿using Build_Test_Dashboard.Contracts.Models;
-using Build_Test_Dashboard.Interfaces;
+﻿using Build_Test_Dashboard.API.Interfaces;
+using Build_Test_Dashboard.Contracts.Models;
 
 namespace Build_Test_Dashboard.Test.Support;
 
+/// <summary>
+/// Represents a fake implementation of IBuildConnectionStore for testing purposes.
+/// </summary>
+/// <seealso cref="IBuildConnectionStore" />
 public class FakeBuildConnectionStore : IBuildConnectionStore
 {
     /// <summary>

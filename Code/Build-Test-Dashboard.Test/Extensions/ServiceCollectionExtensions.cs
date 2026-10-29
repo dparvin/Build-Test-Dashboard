@@ -3,6 +3,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Build_Test_Dashboard.Test.Extensions;
 
+/// <summary>
+/// Provides extension methods for IServiceCollection.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>

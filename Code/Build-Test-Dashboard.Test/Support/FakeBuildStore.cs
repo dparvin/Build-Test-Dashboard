@@ -1,5 +1,5 @@
-﻿using Build_Test_Dashboard.Contracts.Models;
-using Build_Test_Dashboard.Interfaces;
+﻿using Build_Test_Dashboard.API.Interfaces;
+using Build_Test_Dashboard.Contracts.Models;
 
 namespace Build_Test_Dashboard.Test.Support
 {
@@ -103,7 +103,6 @@ namespace Build_Test_Dashboard.Test.Support
         /// <summary>
         /// Gets a build from a repository asynchronous.
         /// </summary>
-        /// <param name="repositoryId">The repository identifier.</param>
         /// <param name="buildId">The build identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
@@ -185,7 +184,6 @@ namespace Build_Test_Dashboard.Test.Support
         /// <summary>
         /// Deletes the build asynchronous.
         /// </summary>
-        /// <param name="repositoryId">The repository identifier.</param>
         /// <param name="buildId">The build identifier.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>

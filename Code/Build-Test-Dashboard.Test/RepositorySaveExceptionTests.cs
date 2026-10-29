@@ -1,9 +1,15 @@
-﻿using Build_Test_Dashboard.Exceptions;
+﻿using Build_Test_Dashboard.API.Exceptions;
 
 namespace Build_Test_Dashboard.Test;
 
+/// <summary>
+/// Represents the test class for RepositorySaveException.
+/// </summary>
 public class RepositorySaveExceptionTests
 {
+    /// <summary>
+    /// Repositories the save exception initializes correctly.
+    /// </summary>
     [Fact]
     public void RepositorySaveException_Initializes_Correctly()
     {

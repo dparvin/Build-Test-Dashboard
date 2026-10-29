@@ -16,6 +16,12 @@ public class FakeHttpMessageHandler : HttpMessageHandler
     /// </value>
     public HttpRequestMessage? Request { get; private set; }
 
+    /// <summary>
+    /// Gets or sets the status code.
+    /// </summary>
+    /// <value>
+    /// The status code.
+    /// </value>
     public HttpStatusCode StatusCode { get; set; } = HttpStatusCode.OK;
 
     /// <summary>

@@ -1,0 +1,28 @@
+﻿using Build_Test_Dashboard.Contracts.Enums;
+using Build_Test_Dashboard.Contracts.Requests;
+
+namespace Build_Test_Dashboard.API.Interfaces;
+
+/// <summary>
+/// Represents a provider for repository operations in the build and test dashboard.
+/// </summary>
+public interface IRepositoryProvider
+{
+    /// <summary>
+    /// Gets the name of the provider.
+    /// </summary>
+    /// <value>
+    /// The name of the provider.
+    /// </value>
+    string ProviderName { get; }
+
+    /// <summary>
+    /// Validates the connection asynchronous.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    Task<RepositoryValidationResult> ValidateRepositoryAsync(
+        CreateRepositoryRequest request,
+        CancellationToken cancellationToken = default);
+}

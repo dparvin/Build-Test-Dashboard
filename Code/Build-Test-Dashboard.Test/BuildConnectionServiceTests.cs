@@ -1,10 +1,13 @@
-﻿using Build_Test_Dashboard.Contracts.Models;
-using Build_Test_Dashboard.Services;
+﻿using Build_Test_Dashboard.API.Services;
+using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Test.Support;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Build_Test_Dashboard.Test;
 
+/// <summary>
+/// Represents the test class for BuildConnectionService.
+/// </summary>
 public class BuildConnectionServiceTests
 {
     /// <summary>

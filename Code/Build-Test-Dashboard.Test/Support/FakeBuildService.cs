@@ -1,9 +1,13 @@
-﻿using Build_Test_Dashboard.Interfaces;
+﻿using Build_Test_Dashboard.API.Interfaces;
 using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Services;
 
 namespace Build_Test_Dashboard.Test.Support;
 
+/// <summary>
+/// Represents a fake implementation of IBuildService for testing purposes.
+/// </summary>
+/// <seealso cref="IBuildService" />
 public class FakeBuildService(
     BuildService realBuildService,
     FakeBuildServiceState state) : IBuildService

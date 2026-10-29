@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -38,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Build-Test-Dashboard\Build-Test-Dashboard.csproj" />
+    <ProjectReference Include="..\Build-Test-Dashboard.API\Build-Test-Dashboard.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

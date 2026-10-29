@@ -1,7 +1,7 @@
-﻿using Build_Test_Dashboard.Contracts.Models;
-using Build_Test_Dashboard.Controllers;
-using Build_Test_Dashboard.Interfaces;
-using Build_Test_Dashboard.Services;
+﻿using Build_Test_Dashboard.API.Controllers;
+using Build_Test_Dashboard.API.Interfaces;
+using Build_Test_Dashboard.API.Services;
+using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Test.Support;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -9,6 +9,9 @@ using System.Net.Http.Json;
 
 namespace Build_Test_Dashboard.Test;
 
+/// <summary>
+/// Represents the unit tests for the <see cref="BuildConnectionsController"/> class.
+/// </summary>
 public class BuildConnectionControllerTests
 {
     /// <summary>
@@ -103,6 +106,9 @@ public class BuildConnectionControllerTests
         Assert.Equal(3, buildConnections?.Id);
     }
 
+    /// <summary>
+    /// Deletes this instance.
+    /// </summary>
     [Fact]
     public async Task Delete()
     {
@@ -115,6 +121,9 @@ public class BuildConnectionControllerTests
         Assert.IsType<NoContentResult>(result);
     }
 
+    /// <summary>
+    /// Deletes the missing.
+    /// </summary>
     [Fact]
     public async Task Delete_Missing()
     {
@@ -127,6 +136,9 @@ public class BuildConnectionControllerTests
         Assert.IsType<NotFoundResult>(result);
     }
 
+    /// <summary>
+    /// Gets the API call returns build connections.
+    /// </summary>
     [Fact]
     public async Task Get_APICall_Returns_BuildConnections()
     {
@@ -145,6 +157,11 @@ public class BuildConnectionControllerTests
         Assert.NotEmpty(buildConnections);
     }
 
+    /// <summary>
+    /// Gets the API call returns build connection.
+    /// </summary>
+    /// <param name="id">The identifier.</param>
+    /// <param name="expectedStatusCode">The expected status code.</param>
     [Theory]
     [InlineData(3, HttpStatusCode.NotFound)]
     [InlineData(2, HttpStatusCode.OK)]
@@ -171,6 +188,9 @@ public class BuildConnectionControllerTests
         }
     }
 
+    /// <summary>
+    /// Posts the API call.
+    /// </summary>
     [Fact]
     public async Task Post_APICall()
     {

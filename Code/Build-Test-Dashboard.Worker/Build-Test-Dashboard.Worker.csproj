@@ -32,7 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Build-Test-Dashboard.API\Build-Test-Dashboard.API.csproj" />
     <ProjectReference Include="..\Build-Test-Dashboard.Contracts\Build-Test-Dashboard.Contracts.csproj" />
-    <ProjectReference Include="..\Build-Test-Dashboard\Build-Test-Dashboard.csproj" />
   </ItemGroup>
 </Project>

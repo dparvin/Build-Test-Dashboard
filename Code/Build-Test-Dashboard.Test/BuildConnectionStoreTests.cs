@@ -1,4 +1,5 @@
-﻿using Build_Test_Dashboard.Data;
+﻿using Build_Test_Dashboard.API.Data;
+using Build_Test_Dashboard.API.Stores;
 using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Stores;
 using Build_Test_Dashboard.Test.Support;
@@ -6,6 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Build_Test_Dashboard.Test;
 
+/// <summary>
+/// Represents the unit tests for the <see cref="BuildConnectionStore"/> class.
+/// </summary>
 public class BuildConnectionStoreTests
 {
     /// <summary>

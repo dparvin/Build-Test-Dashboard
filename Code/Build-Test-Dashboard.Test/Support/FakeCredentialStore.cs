@@ -1,12 +1,28 @@
-﻿using Build_Test_Dashboard.Interfaces;
+﻿using Build_Test_Dashboard.API.Interfaces;
 using Build_Test_Dashboard.Contracts.Models;
 
 namespace Build_Test_Dashboard.Test.Support;
 
+/// <summary>
+/// Represents a fake implementation of ICredentialStore for testing purposes.
+/// </summary>
+/// <seealso cref="ICredentialStore" />
 public class FakeCredentialStore : ICredentialStore
 {
+    /// <summary>
+    /// Gets or sets the stored credential.
+    /// </summary>
+    /// <value>
+    /// The stored credential.
+    /// </value>
     public Credential? StoredCredential { get; set; }
 
+    /// <summary>
+    /// Gets the store call count.
+    /// </summary>
+    /// <value>
+    /// The store call count.
+    /// </value>
     public int StoreCallCount { get; private set; }
 
     /// <summary>

@@ -1,3 +1,4 @@
+using Build_Test_Dashboard.API;
 using Build_Test_Dashboard.Worker.Interfaces;
 
 namespace Build_Test_Dashboard.Worker;
@@ -24,7 +25,7 @@ public class Program
         });
 
         // Add services to the container.
-        builder.Services.AddDashboardServices(builder.Configuration);
+        builder.Services.AddDashboardServices();
         builder.Services.AddScoped<IBuildImportService, Importer>();
 
         builder.Services.AddHostedService<Worker>();

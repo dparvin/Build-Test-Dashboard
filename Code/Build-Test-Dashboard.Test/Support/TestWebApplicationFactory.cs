@@ -1,7 +1,8 @@
 ﻿// Ignore Spelling: Dev
 
-using Build_Test_Dashboard.Interfaces;
-using Build_Test_Dashboard.Providers;
+using Build_Test_Dashboard.API.Interfaces;
+using Build_Test_Dashboard.API.Providers;
+using Build_Test_Dashboard.API.Services;
 using Build_Test_Dashboard.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
