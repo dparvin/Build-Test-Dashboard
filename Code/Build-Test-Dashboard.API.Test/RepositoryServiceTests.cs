@@ -1,0 +1,239 @@
+﻿using Build_Test_Dashboard.API.Exceptions;
+using Build_Test_Dashboard.API.Services;
+using Build_Test_Dashboard.API.Test.Support;
+using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Contracts.Requests;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Build_Test_Dashboard.API.Test;
+
+/// <summary>
+/// Tests for the <see cref="RepositoryService"/> class
+/// </summary>
+public class RepositoryServiceTests
+{
+    /// <summary>
+    /// The factory
+    /// </summary>
+    private readonly TestWebApplicationFactory factory;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RepositoryServiceTests"/> class.
+    /// </summary>
+    public RepositoryServiceTests()
+    {
+        factory = new TestWebApplicationFactory();
+    }
+
+    /// <summary>
+    /// Saves the asynchronous credential store fails new repository rolls back repository.
+    /// </summary>
+    [Fact]
+    public async Task SaveAsync_CredentialStoreFails_NewRepository_RollsBackRepository()
+    {
+        factory.RepositoryStore.FindResult = null;
+
+        factory.CredentialStore.StoreException =
+            new InvalidOperationException("Credential store failed.");
+
+        var request = new CreateRepositoryRequest
+        {
+            Repository = new Repository
+            {
+                Name = "Test Repository",
+                Provider = "GitHub",
+                Owner = "TestOwner",
+                Project = "TestProject",
+                RepositoryName = "TestRepository"
+            },
+            Credential = new Credential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        using var scope = factory.Services.CreateScope();
+        var repositoryService =
+            scope.ServiceProvider.GetRequiredService<RepositoryService>();
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => repositoryService.SaveAsync(
+                request,
+                TestContext.Current.CancellationToken));
+
+        Assert.Equal(
+            "Credential store failed.",
+            exception.Message);
+
+        Assert.Equal(1, factory.RepositoryStore.DeleteCallCount);
+    }
+
+    /// <summary>
+    /// Saves the asynchronous credential store fails existing repository rolls back repository.
+    /// </summary>
+    [Fact]
+    public async Task SaveAsync_CredentialStoreFails_ExistingRepository_RollsBackRepository()
+    {
+        // Arrange
+        var previousRepository = new Repository
+        {
+            Id = 42,
+            Name = "Original Repository",
+            Provider = "GitHub",
+            Owner = "OriginalOwner",
+            Project = "OriginalProject",
+            RepositoryName = "OriginalRepository"
+        };
+
+        factory.RepositoryStore.FindResult = previousRepository;
+
+        factory.CredentialStore.StoreException =
+            new InvalidOperationException("Credential store failed.");
+
+        var request = new CreateRepositoryRequest
+        {
+            Repository = new Repository
+            {
+                Name = "Updated Repository",
+                Provider = "GitHub",
+                Owner = "UpdatedOwner",
+                Project = "UpdatedProject",
+                RepositoryName = "UpdatedRepository"
+            },
+            Credential = new Credential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        using var scope = factory.Services.CreateScope();
+
+        var repositoryService =
+            scope.ServiceProvider.GetRequiredService<RepositoryService>();
+
+        // Act
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => repositoryService.SaveAsync(
+                request,
+                TestContext.Current.CancellationToken));
+
+        // Assert
+        Assert.Equal(
+            "Credential store failed.",
+            exception.Message);
+
+        Assert.Equal(42, request.Repository.Id);
+
+        Assert.Equal(
+            previousRepository,
+            factory.RepositoryStore.StoredRepository);
+    }
+
+    /// <summary>
+    /// While Saving a new repository, where the credential store fails then rolls back repository fails.
+    /// </summary>
+    [Fact]
+    public async Task SaveAsync_CredentialStoreFails_NewRepository_RollsBackRepositoryFails()
+    {
+        factory.RepositoryStore.FindResult = null;
+
+        factory.RepositoryStore.DeleteException =
+            new InvalidOperationException("Repository store delete failed.");
+
+        factory.CredentialStore.StoreException =
+            new InvalidOperationException("Credential store failed.");
+
+        var request = new CreateRepositoryRequest
+        {
+            Repository = new Repository
+            {
+                Name = "Test Repository",
+                Provider = "GitHub",
+                Owner = "TestOwner",
+                Project = "TestProject",
+                RepositoryName = "TestRepository"
+            },
+            Credential = new Credential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        using var scope = factory.Services.CreateScope();
+        var repositoryService =
+            scope.ServiceProvider.GetRequiredService<RepositoryService>();
+
+        var exception = await Assert.ThrowsAsync<RepositorySaveException>(
+            () => repositoryService.SaveAsync(
+                request,
+                TestContext.Current.CancellationToken));
+
+        Assert.Equal(1, factory.RepositoryStore.StoreCallCount);
+
+        Assert.NotNull(factory.RepositoryStore.StoredRepository);
+
+        Assert.Equal(
+            "Saving the repository credentials failed, and the repository rollback also failed.",
+            exception.Message);
+
+        Assert.Equal(
+            "Credential store failed.",
+            exception.InnerException?.Message);
+
+        Assert.Equal(
+            "Repository store delete failed.",
+            exception.RollbackException?.Message);
+
+        Assert.Equal(1, factory.RepositoryStore.DeleteCallCount);
+    }
+
+    /// <summary>
+    /// Deletes an existing repository asynchronously.
+    /// </summary>
+    [Fact]
+    public async Task DeleteAsync_ExistingRepository()
+    {
+        // Arrange
+        var repository = new Repository
+        {
+            Id = 42,
+            Name = "Repository",
+            Provider = "GitHub",
+            Owner = "Owner",
+            Project = "Project",
+            RepositoryName = "Repository"
+        };
+
+        using var scope = factory.Services.CreateScope();
+
+        var repositoryService =
+            scope.ServiceProvider.GetRequiredService<RepositoryService>();
+
+        var saveRequest = new CreateRepositoryRequest
+        {
+            Repository = repository,
+            Credential = new Credential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        await repositoryService.SaveAsync(
+            saveRequest,
+            TestContext.Current.CancellationToken);
+
+        // Act
+        var result = await repositoryService.DeleteAsync(
+            42,
+            TestContext.Current.CancellationToken);
+
+        // Assert
+        Assert.True(result);
+        Assert.Null(factory.RepositoryStore.StoredRepository);
+        Assert.Equal(1, factory.RepositoryStore.DeleteCallCount);
+    }
+}

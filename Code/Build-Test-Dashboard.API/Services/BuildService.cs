@@ -1,7 +1,7 @@
 ﻿using Build_Test_Dashboard.API.Interfaces;
 using Build_Test_Dashboard.Contracts.Models;
 
-namespace Build_Test_Dashboard.Services;
+namespace Build_Test_Dashboard.API.Services;
 
 /// <summary>
 ///  The build service, providing routines to service the build store

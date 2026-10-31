@@ -1,6 +1,6 @@
 ﻿using Build_Test_Dashboard.API.Interfaces;
 
-namespace Build_Test_Dashboard.Stores;
+namespace Build_Test_Dashboard.API.Stores;
 
 /// <summary>
 /// Represents a credential manager for Windows, responsible for securely storing and retrieving credentials.

@@ -3,7 +3,7 @@ using Build_Test_Dashboard.API.Interfaces;
 using Build_Test_Dashboard.Contracts.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Build_Test_Dashboard.Stores;
+namespace Build_Test_Dashboard.API.Stores;
 
 /// <summary>
 /// Provides database storage for build connections.

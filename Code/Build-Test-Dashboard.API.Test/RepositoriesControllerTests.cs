@@ -1,0 +1,499 @@
+﻿using Build_Test_Dashboard.API.Controllers;
+using Build_Test_Dashboard.API.Interfaces;
+using Build_Test_Dashboard.API.Services;
+using Build_Test_Dashboard.API.Stores;
+using Build_Test_Dashboard.API.Test.Support;
+using Build_Test_Dashboard.Contracts.Enums;
+using Build_Test_Dashboard.Contracts.Models;
+using Build_Test_Dashboard.Contracts.Requests;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Net.Http.Json;
+
+namespace Build_Test_Dashboard.API.Test;
+
+/// <summary>
+/// Represents the unit tests for the <see cref="RepositoriesController"/> class.
+/// </summary>
+public class RepositoriesControllerTests
+{
+    /// <summary>
+    /// The test Web Application factory
+    /// </summary>
+    private readonly TestWebApplicationFactory factory;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RepositoriesControllerTests"/> class.
+    /// </summary>
+    public RepositoriesControllerTests() =>
+        factory = new TestWebApplicationFactory();
+
+    /// <summary>
+    /// The Get call returns a list of repositories.
+    /// </summary>
+    [Fact]
+    public async Task Get_ReturnsRepositories()
+    {
+        var repositoryStore = AllRepositories;
+        var buildStore = new FakeBuildStore();
+        var credentialStore = new WindowsCredentialStore();
+        var providers = Array.Empty<IRepositoryProvider>();
+
+        var service = new RepositoryService(providers, repositoryStore, credentialStore);
+        var buildService = new BuildService(buildStore);
+
+        var controller = new RepositoriesController(service, buildService);
+        var result = await controller.Get(TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+    }
+
+    /// <summary>
+    /// The Get call returns a repository.
+    /// </summary>
+    [Fact]
+    public async Task Get_Returns_a_Repository()
+    {
+        var repositoryStore = AllRepositories;
+        var buildStore = new FakeBuildStore();
+        var credentialStore = new WindowsCredentialStore();
+        var providers = Array.Empty<IRepositoryProvider>();
+
+        var service = new RepositoryService(providers, repositoryStore, credentialStore);
+        var buildService = new BuildService(buildStore);
+
+        var controller = new RepositoriesController(service, buildService);
+        var result = await controller.Get(1, TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+    }
+
+    /// <summary>
+    /// The Get call returns a repository.
+    /// </summary>
+    [Fact]
+    public async Task Get_Returns_No_Repository()
+    {
+        var repositoryStore = AllRepositories;
+        var credentialStore = new WindowsCredentialStore();
+        var buildStore = new FakeBuildStore();
+        var providers = Array.Empty<IRepositoryProvider>();
+
+        var service = new RepositoryService(providers, repositoryStore, credentialStore);
+
+        var buildService = new BuildService(buildStore);
+
+        var controller = new RepositoriesController(service, buildService);
+        var result = await controller.Get(3, TestContext.Current.CancellationToken);
+
+        Assert.NotNull(result);
+    }
+
+    /// <summary>
+    /// The Get Builds call returns a repository builds.
+    /// </summary>
+    [Fact]
+    public async Task Get_ReturnsRepositoryBuilds()
+    {
+        var repositoryStore = AllRepositories;
+        var credentialStore = new WindowsCredentialStore();
+        var buildStore = AllBuilds;
+        var providers = Array.Empty<IRepositoryProvider>();
+
+        var service = new RepositoryService(
+            providers,
+            repositoryStore,
+            credentialStore);
+
+        var buildService = new BuildService(buildStore);
+
+        var controller = new RepositoriesController(
+            service,
+            buildService);
+
+        var result =
+            await controller.GetBuilds(
+                1,
+                TestContext.Current.CancellationToken);
+
+        var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        var builds =
+            Assert.IsType<IEnumerable<Build>>(okResult.Value, exactMatch: false);
+
+        Assert.Equal(2, builds.Count());
+        Assert.All(
+            builds,
+            build => Assert.Equal(1, build.SourceRepositoryId));
+    }
+
+    /// <summary>
+    /// Gets the API call returns repositories.
+    /// </summary>
+    [Fact]
+    public async Task Get_APICall_Returns_Repositories()
+    {
+        var client = factory.CreateClient();
+        factory.RepositoryServiceState.UseRealService = false;
+        factory.RepositoryServiceState.RepositoryList = ((FakeRepositoryStore)AllRepositories).AllStoredRepositories;
+
+        var response = await client.GetAsync("/api/repositories", TestContext.Current.CancellationToken);
+
+        response.EnsureSuccessStatusCode();
+
+        var repositories =
+            await response.Content.ReadFromJsonAsync<List<Repository>>(cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.NotNull(repositories);
+        Assert.NotEmpty(repositories);
+    }
+
+    /// <summary>
+    /// Deletes the repository through the API call.
+    /// </summary>
+    /// <param name="repositoryId">The repository ID to delete.</param>
+    /// <param name="expectedStatusCode">The expected HTTP status code.</param>
+    [Theory]
+    [InlineData(3, HttpStatusCode.NotFound)]
+    [InlineData(2, HttpStatusCode.NoContent)]
+    public async Task Delete_APICall(
+        int repositoryId,
+        HttpStatusCode expectedStatusCode)
+    {
+        var client = factory.CreateClient();
+        factory.RepositoryServiceState.UseRealService = false;
+        factory.RepositoryServiceState.RepositoryList = ((FakeRepositoryStore)AllRepositories).AllStoredRepositories;
+
+        var response = await client.DeleteAsync($"/api/repositories/{repositoryId}", TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedStatusCode, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Posts the API call creates repository.
+    /// </summary>
+    [Theory()]
+    [InlineData("GitHub", HttpStatusCode.OK, HttpStatusCode.OK, "Test Repository")]
+    [InlineData("AzureDevOps", HttpStatusCode.OK, HttpStatusCode.OK, "Test Repository")]
+    [InlineData("GitHub", HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized, "")]
+    [InlineData("AzureDevOps", HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized, "")]
+    [InlineData("GitHub", HttpStatusCode.NotFound, HttpStatusCode.NotFound, "")]
+    [InlineData("AzureDevOps", HttpStatusCode.NotFound, HttpStatusCode.NotFound, "")]
+    [InlineData("GitHub", HttpStatusCode.NotAcceptable, HttpStatusCode.BadGateway, "")]
+    [InlineData("AzureDevOps", HttpStatusCode.NotAcceptable, HttpStatusCode.BadGateway, "")]
+    public async Task Post_APICall_Creates_Repository_Connection(
+        string provider,
+        HttpStatusCode statusCode,
+        HttpStatusCode expectedStatusCode,
+        string expectedRepositoryName)
+    {
+        factory.RepositoryServiceState.UseRealService = true;
+        if (provider == "GitHub")
+        {
+            factory.GitHubHandler.StatusCode = statusCode;
+            factory.GitHubHandler.SendFunc = GitHubSendFunc;
+        }
+        else if (provider == "AzureDevOps")
+        {
+            factory.AzureDevOpsHandler.StatusCode = statusCode;
+            //factory.AzureDevOpsHandler.SendFunc = AzureDevOpsSendFunc;
+        }
+
+
+        var client = factory.CreateClient();
+
+        var request = new CreateRepositoryRequest
+        {
+            Repository = new Repository
+            {
+                Name = "Test Repository",
+                Provider = provider,
+                Owner = "TestOwner",
+                Project = "TestProject",
+                RepositoryName = "TestRepository"
+            },
+            Credential = new Credential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        factory.RepositoryStore.FindResult = null;
+        factory.CredentialStore.StoredCredential = null;
+
+
+        var response = await client.PostAsJsonAsync("/api/repositories", request, cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedStatusCode, response.StatusCode);
+
+        if (expectedStatusCode == HttpStatusCode.OK)
+        {
+            var createdRepository =
+                await response.Content.ReadFromJsonAsync<Repository>(cancellationToken: TestContext.Current.CancellationToken);
+
+            Assert.NotNull(createdRepository);
+            Assert.Equal(expectedRepositoryName, createdRepository.Name);
+        }
+
+        Assert.Equal((provider == "GitHub" ? 2 : 0), factory.GitHubHandler.CallCount);
+        Assert.Equal((provider == "AzureDevOps" ? 1 : 0), factory.AzureDevOpsHandler.CallCount);
+    }
+
+    /// <summary>
+    /// Gits the hub send function.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    /// <returns></returns>
+    private HttpResponseMessage GitHubSendFunc(HttpRequestMessage request)
+    {
+        var path = request.RequestUri?.AbsolutePath;
+
+        if (path == "/users/TestOwner")
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        if (path == "/repos/TestOwner/TestRepository")
+            return new HttpResponseMessage(factory.GitHubHandler.StatusCode);
+        return new HttpResponseMessage(HttpStatusCode.NotFound);
+    }
+
+    /// <summary>
+    /// Azures the dev ops send function.
+    /// </summary>
+    /// <param name="arg">The argument.</param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    private HttpResponseMessage AzureDevOpsSendFunc(HttpRequestMessage arg)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Posts the API call fails to creates repository.
+    /// </summary>
+    [Fact()]
+    public async Task Post_APICall_Fails_To_Creates_Repository()
+    {
+        var client = factory.CreateClient();
+        factory.RepositoryServiceState.UseRealService = true;
+        var repository = new Repository
+        {
+            Name = "Test Repository",
+            Provider = "Someplace",
+            Owner = "ATestOwner",
+            RepositoryName = "ATestRepository"
+        };
+
+        var response = await client.PostAsJsonAsync("/api/repositories", repository, cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.InternalServerError, response.StatusCode);
+    }
+
+    /// <summary>
+    /// Posts the API call creates repository owner connection.
+    /// </summary>
+    /// <param name="statusCode">The status code.</param>
+    /// <param name="expectedStatusCode">The expected status code.</param>
+    [Theory()]
+    [InlineData(HttpStatusCode.Unauthorized, HttpStatusCode.Unauthorized)]
+    [InlineData(HttpStatusCode.NotFound, HttpStatusCode.NotFound)]
+    [InlineData(HttpStatusCode.NotAcceptable, HttpStatusCode.BadGateway)]
+    public async Task Post_APICall_Creates_RepositoryOwner_Connection(
+        HttpStatusCode statusCode,
+        HttpStatusCode expectedStatusCode)
+    {
+        factory.RepositoryServiceState.UseRealService = true;
+        factory.GitHubHandler.SendFunc = request =>
+        {
+            var path = request.RequestUri?.AbsolutePath;
+
+            if (path == "/users/TestOwner")
+                return new HttpResponseMessage(statusCode);
+
+            return new HttpResponseMessage(HttpStatusCode.NotFound);
+        };
+
+        var client = factory.CreateClient();
+
+        var request = new CreateRepositoryRequest
+        {
+            Repository = new Repository
+            {
+                Name = "Test Repository",
+                Provider = "GitHub",
+                Owner = "TestOwner",
+                Project = "TestProject",
+                RepositoryName = "TestRepository"
+            },
+            Credential = new Credential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        factory.RepositoryStore.FindResult = null;
+        factory.CredentialStore.StoredCredential = null;
+
+
+        var response = await client.PostAsJsonAsync("/api/repositories", request, cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedStatusCode, response.StatusCode);
+
+        Assert.Equal(1, factory.GitHubHandler.CallCount);
+        Assert.Equal(0, factory.AzureDevOpsHandler.CallCount);
+    }
+
+    /// <summary>
+    /// Posts the API call creates repository.
+    /// </summary>
+    [Theory()]
+    [InlineData(RepositoryValidationResult.InvalidCredentials, HttpStatusCode.Unauthorized, null)]
+    [InlineData(RepositoryValidationResult.OwnerNotFound, HttpStatusCode.NotFound, "Repository owner was not found.")]
+    [InlineData(RepositoryValidationResult.ProjectNotFound, HttpStatusCode.NotFound, "Repository project was not found.")]
+    [InlineData(RepositoryValidationResult.RepositoryNotFound, HttpStatusCode.NotFound, "Repository was not found.")]
+    [InlineData(RepositoryValidationResult.UnknownError, HttpStatusCode.BadGateway, null)]
+    [InlineData((RepositoryValidationResult)999, HttpStatusCode.InternalServerError, null)]
+    public async Task Post_APICall_Failed_GitHub_Validation(
+        RepositoryValidationResult statusCode,
+        HttpStatusCode expectedStatusCode,
+        string? expectedMessage)
+    {
+
+        var client = factory.CreateClient();
+        factory.RepositoryServiceState.UseRealService = false;
+        factory.RepositoryServiceState.ValidationResult = statusCode;
+
+        var request = new CreateRepositoryRequest
+        {
+            Repository = new Repository
+            {
+                Name = "Test Repository",
+                Provider = "GitHub",
+                Owner = "TestOwner",
+                Project = "TestProject",
+                RepositoryName = "TestRepository"
+            },
+            Credential = new Credential
+            {
+                AuthenticationType = "PersonalAccessToken",
+                Secret = "test-secret"
+            }
+        };
+
+        factory.RepositoryStore.FindResult = null;
+        factory.CredentialStore.StoredCredential = null;
+
+        var response = await client.PostAsJsonAsync("/api/repositories", request, cancellationToken: TestContext.Current.CancellationToken);
+
+        Assert.Equal(expectedStatusCode, response.StatusCode);
+
+        var message = await response.Content.ReadAsStringAsync(
+            TestContext.Current.CancellationToken);
+
+        Output($"Response message: {message}");
+
+        if (expectedMessage != null)
+            Assert.Equal(expectedMessage, message);
+    }
+
+    /// <summary>
+    /// A Repository Store
+    /// </summary>
+    readonly IRepositoryStore AllRepositories = new FakeRepositoryStore
+    {
+        AllStoredRepositories =
+        [
+            new Repository
+            {
+                Id = 1,
+                Name = "Build/Test Dashboard",
+                Provider = "GitHub",
+                Owner = "dparvin",
+                Project = "",
+                RepositoryName = "Build-Test-Dashboard"
+            },
+            new Repository
+            {
+                Id = 2,
+                Name = "PropertyGridHelpers",
+                Provider = "GitHub",
+                Owner = "dparvin",
+                Project = "",
+                RepositoryName = "PropertyGridHelpers"
+            }
+        ]
+    };
+
+    /// <summary>
+    /// All builds
+    /// </summary>
+    readonly IBuildStore AllBuilds = new FakeBuildStore
+    {
+        Builds =
+        [
+            new Build
+            {
+                Id = 1,
+                SourceRepositoryId = 1,
+                BuildNumber = "100",
+                Branch = "main",
+                Commit = "abc123",
+                Status = "Succeeded",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 1,
+                        BuildId = 1,
+                        Total = 100,
+                        Passed = 98,
+                        Failed = 1,
+                        Skipped = 1,
+                        Duration = TimeSpan.FromSeconds(42)
+                    }
+                ]
+            },
+            new Build
+            {
+                Id = 2,
+                SourceRepositoryId = 1,
+                BuildNumber = "101",
+                Branch = "main",
+                Commit = "def456",
+                Status = "Succeeded",
+                TestRuns =
+                [
+                    new TestRun
+                    {
+                        Id = 2,
+                        BuildId = 2,
+                        Total = 150,
+                        Passed = 150,
+                        Failed = 0,
+                        Skipped = 0,
+                        Duration = TimeSpan.FromSeconds(55)
+                    },
+                    new TestRun
+                    {
+                        Id = 3,
+                        BuildId = 2,
+                        Total = 25,
+                        Passed = 24,
+                        Failed = 1,
+                        Skipped = 0,
+                        Duration = TimeSpan.FromSeconds(8)
+                    }
+                ]
+            }
+        ]
+    };
+
+    /// <summary>
+    /// Outputs the specified message.
+    /// </summary>
+    /// <param name="message">The message.</param>
+    private static void Output(string message)
+    {
+        TestContext.Current.TestOutputHelper?.WriteLine(message);
+    }
+}

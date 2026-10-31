@@ -5,8 +5,6 @@ using Build_Test_Dashboard.API.Providers;
 using Build_Test_Dashboard.API.Services;
 using Build_Test_Dashboard.API.Stores;
 using Build_Test_Dashboard.Contracts.Enums;
-using Build_Test_Dashboard.Services;
-using Build_Test_Dashboard.Stores;
 using Microsoft.EntityFrameworkCore;
 
 namespace Build_Test_Dashboard.API;
