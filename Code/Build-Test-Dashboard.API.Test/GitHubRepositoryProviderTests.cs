@@ -1,4 +1,4 @@
-﻿using Build_Test_Dashboard.API.Providers;
+﻿using Build_Test_Dashboard.Providers;
 using Build_Test_Dashboard.API.Services;
 using Build_Test_Dashboard.API.Test.Support;
 using Build_Test_Dashboard.Contracts.Enums;

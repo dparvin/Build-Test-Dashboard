@@ -1,13 +1,13 @@
 ﻿// Ignore Spelling: Dev
 
-using Build_Test_Dashboard.API.Interfaces;
 using Build_Test_Dashboard.Contracts.Enums;
 using Build_Test_Dashboard.Contracts.Requests;
+using Build_Test_Dashboard.Providers.Interfaces;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace Build_Test_Dashboard.API.Providers;
+namespace Build_Test_Dashboard.Providers;
 
 /// <summary>
 /// Represents a provider for Azure DevOps repository operations in the build and test dashboard.

@@ -4,6 +4,7 @@ using Build_Test_Dashboard.Contracts.Enums;
 using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Contracts.Requests;
 using Build_Test_Dashboard.Contracts.Results;
+using Build_Test_Dashboard.Providers.Interfaces;
 
 namespace Build_Test_Dashboard.API.Services;
 

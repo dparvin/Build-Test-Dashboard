@@ -6,6 +6,7 @@ using Build_Test_Dashboard.API.Test.Support;
 using Build_Test_Dashboard.Contracts.Enums;
 using Build_Test_Dashboard.Contracts.Models;
 using Build_Test_Dashboard.Contracts.Requests;
+using Build_Test_Dashboard.Providers.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Json;

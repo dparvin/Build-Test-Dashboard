@@ -34,5 +34,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Build-Test-Dashboard.API\Build-Test-Dashboard.API.csproj" />
     <ProjectReference Include="..\Build-Test-Dashboard.Contracts\Build-Test-Dashboard.Contracts.csproj" />
+    <ProjectReference Include="..\Build-Test-Dashboard.Providers\Build-Test-Dashboard.Providers.csproj" />
   </ItemGroup>
 </Project>

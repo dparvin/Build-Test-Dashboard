@@ -1,10 +1,10 @@
-﻿using Build_Test_Dashboard.API.Interfaces;
-using Build_Test_Dashboard.Contracts.Enums;
+﻿using Build_Test_Dashboard.Contracts.Enums;
 using Build_Test_Dashboard.Contracts.Requests;
+using Build_Test_Dashboard.Providers.Interfaces;
 using System.Net;
 using System.Net.Http.Headers;
 
-namespace Build_Test_Dashboard.API.Providers;
+namespace Build_Test_Dashboard.Providers;
 
 /// <summary>
 /// Represents a provider for GitHub repository operations in the build and test dashboard.

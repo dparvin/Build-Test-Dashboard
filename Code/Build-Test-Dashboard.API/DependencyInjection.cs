@@ -1,10 +1,11 @@
 ﻿using Build_Test_Dashboard.API.Configuration;
 using Build_Test_Dashboard.API.Data;
 using Build_Test_Dashboard.API.Interfaces;
-using Build_Test_Dashboard.API.Providers;
 using Build_Test_Dashboard.API.Services;
 using Build_Test_Dashboard.API.Stores;
 using Build_Test_Dashboard.Contracts.Enums;
+using Build_Test_Dashboard.Providers;
+using Build_Test_Dashboard.Providers.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Build_Test_Dashboard.API;

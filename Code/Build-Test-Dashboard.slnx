@@ -2,6 +2,7 @@
   <Project Path="Build-Test-Dashboard.API.Test/Build-Test-Dashboard.API.Test.csproj" />
   <Project Path="Build-Test-Dashboard.API/Build-Test-Dashboard.API.csproj" />
   <Project Path="Build-Test-Dashboard.Contracts/Build-Test-Dashboard.Contracts.csproj" Id="effa40e0-2a3d-4ca9-b9c8-caa57f7d81a4" />
+  <Project Path="Build-Test-Dashboard.Providers/Build-Test-Dashboard.Providers.csproj" Id="e9458808-bb5f-4a56-9e4e-1975718b0631" />
   <Project Path="Build-Test-Dashboard.Worker.Test/Build-Test-Dashboard.Worker.Test.csproj" Id="b851be38-7bf1-40e3-abc6-0dfcea70bc92">
     <BuildDependency Project="Build-Test-Dashboard.Contracts/Build-Test-Dashboard.Contracts.csproj" />
   </Project>
